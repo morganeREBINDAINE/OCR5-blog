@@ -1,0 +1,20 @@
+{
+    "name": "mrebi/projet5-blog",
+    "authors": [
+        {
+            "name": "Morgane",
+            "email": "mrebindaine@hotmail.com"
+        }
+    ],
+    "require": {
+        "altorouter/altorouter": "^1.2",
+        "twig/twig": "^2.12",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "OCR5\\": "src/"
+        }
+    }
+}
