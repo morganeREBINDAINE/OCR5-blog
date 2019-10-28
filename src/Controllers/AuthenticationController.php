@@ -7,8 +7,12 @@ use OCR5\Services\DatabaseManager;
 
 class AuthenticationController extends Controller
 {
-    public function connexion()
+    public function connection()
     {
+        if ($this->isConnected()) {
+            header('location: http://blog/');
+        }
+
         $error = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
@@ -24,5 +28,16 @@ class AuthenticationController extends Controller
         }
 
         return $this->render('authentication/connection', ['error' => $error]);
+    }
+
+    public function disconnection()
+    {
+        session_destroy();
+        header('location: http://blog/');
+    }
+
+    private function isConnected()
+    {
+        return isset($_SESSION['token']);
     }
 }

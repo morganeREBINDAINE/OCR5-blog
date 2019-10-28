@@ -9,7 +9,8 @@ session_start();
 $router = new AltoRouter();
 
 $router->map('GET', '/', 'OCR5\Controllers\BlogController::home');
-$router->map('GET|POST', '/connexion', 'OCR5\Controllers\AuthenticationController::connexion');
+$router->map('GET|POST', '/connexion', 'OCR5\Controllers\AuthenticationController::connection');
+$router->map('POST', '/deconnexion', 'OCR5\Controllers\AuthenticationController::disconnection');
 $router->map('GET', '/profil', 'OCR5\Controllers\BackController::profile');
 
 $match = $router->match();

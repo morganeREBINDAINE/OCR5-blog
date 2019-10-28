@@ -33,11 +33,25 @@
                             Articles
                         </a>
                     </li>
+                    {% if session.token is defined %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rediger-article">
+                                Rédiger un article
+                            </a>
+                        </li>
+                    <li class="">
+                        <form action="/deconnexion" method="post">
+                            <button class="btn btn-warning nav-link nav-item">Déconnexion</button>
+                        </form>
+                        </a>
+                    </li>
+                    {% else %}
                     <li class="nav-item">
                         <a class="btn btn-warning nav-link" href="/connexion">
                             Connexion
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

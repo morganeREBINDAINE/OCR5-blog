@@ -6,6 +6,7 @@ use OCR5\Database\DatabaseMySQL;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
+use Twig\TwigTest;
 
 class AppManager
 {
@@ -28,6 +29,8 @@ class AppManager
             $twig->addFunction(new TwigFunction('img', function ($value) {
                 return 'img/' . $value;
             }));
+            $twig->addGlobal('session', $_SESSION);
+
             self::$twig = $twig;
         }
 
