@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="home-content container">
+        <div class="row">
+            <div class="main col-lg-8">
+                {% include 'blog/parts/_main.html.twig' %}
+            </div>
+            <div class="aside col-lg-4 bg-secondary px-0">
+                {% include 'blog/parts/_aside.html.twig' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
