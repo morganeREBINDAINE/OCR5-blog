@@ -15,13 +15,24 @@ abstract class Controller
         try {
             echo(AppManager::getTwig())->render($templatePath, $vars);
         } catch (LoaderError $e) {
-            echo(AppManager::getTwig())->render('errors/templateNotFound.html.twig', [
-                'template' => $templatePath
+            echo(AppManager::getTwig())->render('errors/error.html.twig', [
+                'message' => "Attention, développeuse ! Il y a un problème : le template que tu tentes de définir" . $templatePath . "n'existe pas !"
             ]);
         } catch (RuntimeError $e) {
             echo $e->getMessage();
         } catch (SyntaxError $e) {
             echo $e->getMessage();
         }
+        unset($_SESSION['flashbag']);
+    }
+
+    protected function isConnected()
+    {
+        return isset($_SESSION['token']);
+    }
+
+    protected function addFlash($subject, $message)
+    {
+        $_SESSION['flashbag'][$subject] = $message;
     }
 }

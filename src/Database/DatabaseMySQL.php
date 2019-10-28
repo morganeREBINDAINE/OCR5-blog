@@ -10,7 +10,7 @@ class DatabaseMySQL
 
     public function __construct()
     {
-        $this->initDatabase();
+        $this->pdo = $this->initDatabase();
     }
 
     private function initDatabase()
@@ -33,7 +33,8 @@ class DatabaseMySQL
              role ENUM ('administrator', 'contributor') NOT NULL,
              status TINYINT( 1 ) NOT NULL,
              added DATETIME NOT NULL,
-             UNIQUE (username, email)
+             UNIQUE (username),
+             UNIQUE (email)
         )");
 
         $pdo->exec("CREATE TABLE IF NOT EXISTS comment (
@@ -57,7 +58,7 @@ class DatabaseMySQL
              FOREIGN KEY (user_id) REFERENCES user(id)
         )");
 
-        $this->pdo = $pdo;
+        return $pdo;
     }
 
     public function query($query, $parameters = [], $multiple = false)

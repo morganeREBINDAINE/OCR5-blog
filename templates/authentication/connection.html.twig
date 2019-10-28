@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <div class="container my-5 py-5">
-        {% if error is not empty %}
-            <div class="alert alert-danger">{{ error }}</div>
+        <h1 class="mb-5">Page de connexion</h1>
+        {% if session.flashbag.error is defined %}
+            <div class="alert alert-danger">{{ session.flashbag.error }}</div>
         {% endif %}
-        <form action="/connexion" method="post">
+        <form class="mb-5" action="/connexion" method="post">
             <div class="form-group">
                 <label for="username">Pseudo:</label>
                 <input class="form-control" type="text" name="username">
@@ -15,5 +16,6 @@
             </div>
             <button class="btn btn-primary" type="submit">Se connecter</button>
         </form>
+        <p>Vous souhaitez rejoindre les rédacteurs ? <a href="/inscription">Cliquez ici !</a></p>
     </div>
 {% endblock %}
