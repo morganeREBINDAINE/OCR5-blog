@@ -1,12 +1,7 @@
 <?php
 
-
 require('../vendor/autoload.php');
 
-
-//$controller = new OCR5\Controllers\BlogController();
-//call_user_func_array([$controller, 'home'], ['params envoyés']);
-//die();
 $router = new AltoRouter();
 
 $router->map('GET', '/', 'OCR5\Controllers\BlogController::home');
