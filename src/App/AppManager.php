@@ -29,6 +29,7 @@ class AppManager
                 return 'img/' . $value;
             }));
             $twig->addGlobal('session', $_SESSION);
+            $twig->addGlobal('post', $_POST);
 
             self::$twig = $twig;
         }

@@ -3,12 +3,15 @@
 namespace OCR5\Controllers;
 
 use OCR5\App\AppManager;
+use OCR5\Traits\FlashbagTrait;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 abstract class Controller
 {
+    use FlashbagTrait;
+
     protected function render($template, $vars = [])
     {
         $templatePath = $template . '.html.twig';
