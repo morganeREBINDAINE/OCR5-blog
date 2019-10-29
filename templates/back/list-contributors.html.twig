@@ -1,0 +1,40 @@
+{% extends 'layouts/full-width.html.twig' %}
+{% block content %}
+    <h1>Liste des contributeurs :</h1>
+    {% if session.flashbag.contributor is defined %}
+        <div class="alert alert-success">
+            {{ session.flashbag.contributor }}
+        </div>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for contributor in contributors %}
+                <tr>
+                    <td>{{ contributor.username }}</td>
+                    <td>{{ contributor.email }}</td>
+                    <td>{{ contributor.added | date('d/m/Y') }}</td>
+                    <td>
+                        <form action="/demandes-redacteurs" method="post">
+                            <input type="hidden" name="hash" value="{{ hash(contributor.id) }}">
+                            <input type="hidden" name="id" value="{{ contributor.id }}">
+                            <input type="submit" class="btn btn-danger" name="action" value="supprimer">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if contributors is empty %}
+        <p>Il n'y a pas de rédacteurs.</p>
+    {% endif %}
+{% endblock %}
