@@ -24,7 +24,7 @@ class AuthenticationController extends Controller
                 header('Location: http://blog/profil');
                 exit();
             }
-            $this->addFlash('error', 'Erreur: pseudo et/ou mot de passe incorrects');
+            $this->addFlash('error', 'Erreur: pseudo et/ou mot de passe incorrects, ou compte non validé.');
         }
 
         return $this->render('authentication/connection');

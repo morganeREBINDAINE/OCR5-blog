@@ -1,5 +1,5 @@
-.home-content {
-  &.container {
+.home {
+  .container {
     max-width: inherit;
 
     @media (min-width: 768px) {

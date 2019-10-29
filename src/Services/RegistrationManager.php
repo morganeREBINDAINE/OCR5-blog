@@ -49,16 +49,16 @@ class RegistrationManager extends Manager
 
     public function createContributor($formData)
     {
-        return $this->db->query("INSERT INTO user (username, email, password, role, status, added) VALUES (:username, :email, :password, 'contributor', 0, NOW())", [
+        return $this->queryDatabase("INSERT INTO user (username, email, password, role, status, added) VALUES (:username, :email, :password, 'contributor', 0, NOW())", [
             ':username' => $formData['username'],
-            ':password' => $formData['password'],
-            ':email' => password_hash($formData['email'], PASSWORD_DEFAULT)
+            ':password' => password_hash($formData['password'], PASSWORD_DEFAULT),
+            ':email' => $formData['email']
         ]);
     }
 
     private function findStatusContributor($username, $email)
     {
-        return $this->db->query("SELECT status FROM user WHERE username = :username OR email = :email", [
+        return $this->queryDatabase("SELECT status FROM user WHERE username = :username OR email = :email", [
             ':username' => $username,
             ':email' => $email
         ]);

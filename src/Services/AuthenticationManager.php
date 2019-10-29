@@ -15,21 +15,21 @@ class AuthenticationManager extends Manager
 
     public function checkLogin($username, $password)
     {
-        $result = $this->getPasswordByUsername($username);
+        $result = $this->getPasswordByValidUsername($username);
 
         return password_verify($password, $result['password']);
     }
 
     private function saveToken($username, $token)
     {
-        return $this->db->query("UPDATE user SET token = :token WHERE username = :username", [
+        return $this->queryDatabase("UPDATE user SET token = :token WHERE username = :username", [
             ':username' => $username,
             ':token' => $token
         ]);
     }
 
-    private function getPasswordByUsername($username)
+    private function getPasswordByValidUsername($username)
     {
-        return $this->db->query("SELECT password FROM user WHERE username = :username", [':username' => $username]);
+        return $this->queryDatabase("SELECT password FROM user WHERE username = :username AND status = 1", [':username' => $username]);
     }
 }

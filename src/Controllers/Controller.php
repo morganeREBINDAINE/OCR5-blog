@@ -19,7 +19,7 @@ abstract class Controller
             echo(AppManager::getTwig())->render($templatePath, $vars);
         } catch (LoaderError $e) {
             echo(AppManager::getTwig())->render('errors/error.html.twig', [
-                'message' => "Attention, développeuse ! Il y a un problème : le template que tu tentes de définir" . $templatePath . "n'existe pas !"
+                'message' => "Attention, développeuse ! Il y a un problème : le template que tu tentes de définir: \"" . $templatePath . "\" n'existe pas !"
             ]);
         } catch (RuntimeError $e) {
             echo $e->getMessage();

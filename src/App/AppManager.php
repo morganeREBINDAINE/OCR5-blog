@@ -28,6 +28,9 @@ class AppManager
             $twig->addFunction(new TwigFunction('img', function ($value) {
                 return 'img/' . $value;
             }));
+            $twig->addFunction(new TwigFunction('hash', function ($value) {
+                return password_hash((string)$value, PASSWORD_DEFAULT);
+            }));
             $twig->addGlobal('session', $_SESSION);
             $twig->addGlobal('post', $_POST);
 
@@ -50,5 +53,8 @@ class AppManager
     {
         header("HTTP/1.0 404 Not Found");
         echo(AppManager::getTwig())->render('errors/404.html.twig');
+    }
+
+    public static function init() {
     }
 }
