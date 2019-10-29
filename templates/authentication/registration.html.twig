@@ -8,27 +8,51 @@
             <p>Vous pourrez alors rédiger des articles, qui seront soumis à la validation de l'administratrice.</p>
         </div>
         {% if session.flashbag.success is defined %}
-            <div class="alert alert-danger">
+            <div class="alert alert-success">
                 <p>{{ session.flashbag.success }}</p>
+            </div>
+        {% elseif session.flashbag.error is defined %}
+            <div class="alert alert-danger">
+                <p>{{ session.flashbag.error }}</p>
             </div>
         {% endif %}
         <form class="mb-5" action="/inscription" method="post">
             <div class="form-group">
                 <label for="username">Choisissez un pseudo:</label>
-                <input class="form-control" type="text" name="username">
+                <input class="form-control" type="text" name="username" value="{{ post.username }}">
             </div>
+            {% if session.flashbag.errorUsername is defined %}
+                <div class="alert alert-danger">
+                    <p>{{ session.flashbag.errorUsername }}</p>
+                </div>
+            {% endif %}
             <div class="form-group">
                 <label for="email">Entrez votre email:</label>
-                <input class="form-control" type="email" name="email">
+                <input class="form-control" type="email" name="email" value="{{ post.email }}">
             </div>
+            {% if session.flashbag.errorEmail is defined %}
+                <div class="alert alert-danger">
+                    <p>{{ session.flashbag.errorEmail }}</p>
+                </div>
+            {% endif %}
             <div class="form-group">
                 <label for="password">Choisissez un mot de passe:</label>
                 <input class="form-control" type="password" name="password">
             </div>
+            {% if session.flashbag.errorPasswordEmpty is defined %}
+                <div class="alert alert-danger">
+                    <p>{{ session.flashbag.errorPasswordEmpty }}</p>
+                </div>
+            {% endif %}
             <div class="form-group">
                 <label for="passwordConfirm">Confirmez le mot de passe:</label>
                 <input class="form-control" type="password" name="passwordConfirm">
             </div>
+            {% if session.flashbag.errorPasswordConfirm is defined %}
+                <div class="alert alert-danger">
+                    <p>{{ session.flashbag.errorPasswordConfirm }}</p>
+                </div>
+            {% endif %}
             <button class="btn btn-primary" type="submit">S'inscrire</button>
         </form>
     </div>

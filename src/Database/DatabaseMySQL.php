@@ -27,8 +27,6 @@ class DatabaseMySQL
              username VARCHAR( 50 ) NOT NULL, 
              email VARCHAR( 255 ) NOT NULL,
              password VARCHAR( 255 ) NOT NULL,
-             first_name VARCHAR( 255 ) NULL,
-             last_name VARCHAR( 255 ) NULL,
              token VARCHAR( 255 ) NULL,
              role ENUM ('administrator', 'contributor') NOT NULL,
              status TINYINT( 1 ) NOT NULL,
