@@ -1,6 +1,6 @@
 <?php
 
-use OCR5\App\AppManager;
+use OCR5\App\App;
 
 require('../vendor/autoload.php');
 
@@ -15,14 +15,15 @@ $router->map('GET|POST', '/inscription', 'OCR5\Controllers\RegistrationControlle
 $router->map('GET|POST', '/profil', 'OCR5\Controllers\AdminController::profile');
 $router->map('GET', '/gestion-redacteurs', 'OCR5\Controllers\AdminController::contributorsList');
 $router->map('POST', '/demandes-redacteurs', 'OCR5\Controllers\AdminController::contributorsRequests');
+$router->map('GET|POST', '/rediger-article', 'OCR5\Controllers\AdminController::writePost');
 
 $match = $router->match();
 
-AppManager::init();
+App::init();
 
 if (is_array($match) && is_callable($match['target'])) {
     list($controller, $method) = explode('::', $match['target']);
     call_user_func_array([new $controller(), $method], $match['params']);
 } else {
-    AppManager::error404();
+    App::error404();
 }

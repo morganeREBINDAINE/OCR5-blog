@@ -6,7 +6,7 @@ class BackManager extends Manager
 {
     public function getContributorsRequests()
     {
-        return $this->queryDatabase('SELECT * FROM user WHERE status = 0', [], true);
+        return $this->queryDatabase('SELECT * FROM user WHERE status = 0 AND role = "contributor"', [], 'OCR5\Entities\User', true);
     }
 
     public function getArticlesRequests()

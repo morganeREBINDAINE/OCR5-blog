@@ -2,8 +2,11 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\Entities\Post;
 use OCR5\Services\BackManager;
 use OCR5\Services\ContributorsManager;
+use OCR5\Services\EntitiesManager;
+use OCR5\Services\PostManager;
 
 class AdminController extends Controller
 {
@@ -65,8 +68,21 @@ class AdminController extends Controller
                     }
                     header('location: http://blog/gestion-redacteurs');
                     break;
+                default:
+                    return $this->error('Erreur lors du processus.');
             }
         }
 
+    }
+
+    public function writePost() {
+        if(isset($_POST['title'], $_POST['content'], $_POST['chapo'])) {
+            $em = new PostManager();
+            $em->createPost();
+
+        }
+        var_dump($_POST);
+        var_dump($_SESSION);
+        return $this->render('back/post-form');
     }
 }

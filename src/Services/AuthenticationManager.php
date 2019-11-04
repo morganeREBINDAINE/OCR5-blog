@@ -4,11 +4,12 @@ namespace OCR5\Services;
 
 class AuthenticationManager extends Manager
 {
-    public function registerSession($username)
+    public function startSession($username)
     {
-        $_SESSION['username'] = $username;
+        $user = (new UserManager())->findUser($username);
         $token = md5($username . mt_rand());
-        $_SESSION['token'] = base64_encode($token);
+        $user->setToken(base64_encode($token));
+        $_SESSION['user'] = $user;
 
         return $this->saveToken($username, password_hash($token, PASSWORD_BCRYPT));
     }
@@ -18,6 +19,15 @@ class AuthenticationManager extends Manager
         $result = $this->getPasswordByValidUsername($username);
 
         return password_verify($password, $result['password']);
+    }
+
+    public function compareTokens($sessionUser) {
+        $sessionToken = base64_decode($sessionUser->getToken());
+        $result = $this->queryDatabase('SELECT token FROM user WHERE id = :id', [
+            ':id' => $sessionUser->getId()
+        ]);
+
+        return password_verify($sessionToken, $result['token']);
     }
 
     private function saveToken($username, $token)

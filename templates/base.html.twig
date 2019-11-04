@@ -10,52 +10,60 @@
 </head>
 <body class="{% block bodyClass %}{% endblock %}">
 <header>
-    <nav class="navbar fixed-top navbar-expand-md navbar-light bg-primary px-5">
-        <div class="container">
-            <div class="navbar-brand-container">
-                <a class="navbar-brand" href="/">
-                    <img src="{{ img('logo.png') }}" alt="">
-                </a>
-            </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            Accueil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/articles">
-                            Articles
-                        </a>
-                    </li>
-                    {% if session.token is defined %}
+    <div class="fixed-top">
+{#            {% if session.token is defined and session.username is defined %}#}
+{#                <div class="connected-bar">#}
+{#                    Bonjour {{ session.role }} "{{ session.username }}" !#}
+{#                </div>#}
+{#            {% endif %}#}
+        <nav class="navbar navbar-expand-md navbar-light bg-primary px-5 flex-column">
+            <div class="container">
+                <div class="navbar-brand-container">
+                    <a class="navbar-brand" href="/">
+                        <img src="{{ img('logo.png') }}" alt="">
+                    </a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/profil">
-                                Profil
+                            <a class="nav-link" href="/">
+                                Accueil
                             </a>
                         </li>
-                    <li class="">
-                        <form action="/deconnexion" method="post">
-                            <button class="btn btn-warning nav-link nav-item">Déconnexion</button>
-                        </form>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="btn btn-warning nav-link" href="/connexion">
-                            Connexion
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/articles">
+                                Articles
+                            </a>
+                        </li>
+{#                        {% if lol %}#}
+                        {% if session.user.token is tokenValid %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/profil">
+                                    Profil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form action="/deconnexion" method="post">
+                                    <button class="btn btn-warning nav-link nav-item">Déconnexion</button>
+                                </form>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="btn btn-warning nav-link" href="/connexion">
+                                    Connexion
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 </header>
 {% block body %}{% endblock %}
 <footer class="bg-secondary py-4">

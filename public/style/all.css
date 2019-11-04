@@ -1,0 +1,87 @@
+.navbar-brand {
+  position: absolute;
+  top: -30px;
+  left: 0;
+}
+.navbar-brand img {
+  width: 80px;
+}
+.navbar-brand-container {
+  position: relative;
+}
+
+.nav-item {
+  margin-left: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 15px;
+}
+.nav-item a {
+  font-size: 15px;
+}
+
+body {
+  margin-top: 56px;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.connected-bar {
+  text-align: center;
+  background: black;
+  color: gray;
+  padding: 3px;
+}
+
+.home .container {
+  max-width: inherit;
+}
+@media (min-width: 768px) {
+  .home .container {
+    max-width: inherit;
+  }
+}
+@media (min-width: 992px) {
+  .home .container {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .home .container {
+    max-width: 1140px;
+  }
+}
+.home .aside-socialmedia {
+  background: black;
+  text-align: center;
+}
+.home .aside-socialmedia i {
+  margin: 0 20px;
+  font-size: 20px;
+  transition: color 0.7s;
+}
+.home .aside-presentation-photo {
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/logo.png");
+  background-size: contain;
+  margin: auto;
+}
+.home .aside-presentation .name {
+  display: block;
+  text-align: center;
+}
+.home .aside-presentation .description {
+  text-align: center;
+  display: block;
+}
+
+@media (min-width: 992px) {
+  .main-content {
+    height: 350px;
+  }
+}
+
+/*# sourceMappingURL=all.css.map */

@@ -1,0 +1,22 @@
+{% extends 'layouts/full-width.html.twig' %}
+{% block content %}
+    <h1>Ajouter un article</h1>
+    <form action="/rediger-article" method="post">
+        <div class="form-group">
+            <label for="title">Titre </label><small class="text-muted"> (max 50 caractères)</small>
+            <input type="text" class="form-control" name="title">
+        </div>
+        <div class="form-group">
+            <label for="title">Contenu</label>
+            <textarea class="form-control" name="content"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="chapo">Chapô</label>
+            <textarea class="form-control" name="chapo"></textarea>
+            <small class="form-text text-muted">Le chapô est affichée sur la liste des articles (max 200 caractères).</small>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Envoyer</button>
+        </div>
+    </form>
+{% endblock %}

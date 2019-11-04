@@ -2,7 +2,7 @@
 
 namespace OCR5\Services;
 
-use OCR5\App\AppManager;
+use OCR5\App\App;
 use OCR5\Traits\FlashbagTrait;
 
 class Manager
@@ -13,10 +13,10 @@ class Manager
 
     public function __construct()
     {
-        $this->db = AppManager::getDatabase();
+        $this->db = App::getDatabase();
     }
 
-    public function queryDatabase($query, $parameters = [], $multiple = false) {
-        return $this->db->query($query, $parameters, $multiple);
+    public function queryDatabase($query, $parameters = [], $className=null, $multiple = false) {
+        return $this->db->query($query, $parameters, $className, $multiple);
     }
 }

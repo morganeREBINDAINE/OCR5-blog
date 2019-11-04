@@ -3,3 +3,6 @@ vendor/
 .idea
 cache/
 todo
+public/style/all.css.map
+public/img/
+.gitignore

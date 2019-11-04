@@ -19,7 +19,7 @@ class AuthenticationController extends Controller
             $authenticationManager = new AuthenticationManager();
             if ($authenticationManager->checkLogin($_POST['username'], $_POST['password'])) {
                 $authenticationManager = new AuthenticationManager();
-                $authenticationManager->registerSession($_POST['username']);
+                $authenticationManager->startSession($_POST['username']);
 
                 header('Location: http://blog/profil');
                 exit();
