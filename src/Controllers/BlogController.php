@@ -10,7 +10,6 @@ class BlogController extends Controller
 {
     public function home()
     {
-        var_dump($_SESSION);
         return $this->render('blog/home');
     }
 

@@ -34,7 +34,7 @@ class App
                 return 'img/' . $value;
             }));
             $twig->addFunction(new TwigFunction('hash', function ($value) {
-                return password_hash((string)$value, PASSWORD_DEFAULT);
+                return base64_encode($value.'         ').'-'. password_hash((string)$value, PASSWORD_DEFAULT);
             }));
             $twig->addGlobal('session', $_SESSION);
             $twig->addGlobal('post', $_POST);
@@ -58,9 +58,5 @@ class App
     {
         header("HTTP/1.0 404 Not Found");
         echo(App::getTwig())->render('errors/404.html.twig');
-    }
-
-    public static function init()
-    {
     }
 }

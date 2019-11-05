@@ -6,7 +6,9 @@ class AuthenticationManager extends Manager
 {
     public function startSession($username)
     {
-        $user = (new UserManager())->findUser($username);
+        $user = $this->queryDatabase('SELECT * FROM user WHERE username = :attribute', [
+            ':attribute' =>$username
+        ], 'OCR5\Entities\User');
         $token = md5($username . mt_rand());
         $user->setToken(base64_encode($token));
         $_SESSION['user'] = $user;

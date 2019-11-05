@@ -3,17 +3,27 @@
 namespace OCR5\Entities;
 
 use DateTime;
+use OCR5\Interfaces\EntityInterface;
 
-class Post
+class Post implements EntityInterface
 {
     private $id;
-    private $user;
+    private $user_id;
     private $title;
     private $content;
     private $chapo;
     private $status;
     private $added;
     private $updated;
+
+    const REQUESTED_TRADUCTION = 'article';
+    const PUBLIC_FIELDS        = [
+        'user' => 'Pseudo de l\'auteur',
+        'title' => 'Titre',
+        'chapo' => 'Chapô',
+        'added' => 'Date ajout',
+        'updated' => 'Dernière modification'
+    ];
 
     public function __construct()
     {
@@ -34,7 +44,7 @@ class Post
      */
     public function getUser()
     {
-        return $this->user;
+        return $this->user_id;
     }
 
     /**
@@ -42,7 +52,7 @@ class Post
      */
     public function setUser($user)
     {
-        $this->user = $user;
+        $this->user_id = $user;
     }
 
     /**
@@ -139,5 +149,15 @@ class Post
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+    }
+
+    public function getRequestedTraduction()
+    {
+        return self::REQUESTED_TRADUCTION;
+    }
+
+    public function getPublicFields()
+    {
+        return self::PUBLIC_FIELDS;
     }
 }

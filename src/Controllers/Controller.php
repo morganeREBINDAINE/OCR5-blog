@@ -27,7 +27,6 @@ abstract class Controller
         } catch (SyntaxError $e) {
             echo $e->getMessage();
         }
-        unset($_SESSION['flashbag']);
     }
 
     protected function isConnected()

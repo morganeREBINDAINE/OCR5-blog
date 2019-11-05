@@ -1,0 +1,40 @@
+{% if form.type is same as ('requests') %}
+    <h2>Demandes d'ajout de {{ form.traductedEntity }}</h2>
+{% elseif form.type is same as ('valids') %}
+<h1>Liste des {{ form.traductedEntity }} :</h1>
+{% endif %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            {% for label in form.labels %}
+                <th>{{ label }}</th>
+            {% endfor %}
+            <th class="text-right">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in form.row %}
+            <tr>
+                {% for data in row.datas %}
+                    <td>{{ data }}</td>
+                {% endfor %}
+                <td class="text-right">
+                    <form action="/handle-entities" method="post">
+                        <input type="hidden" name="token" value="{{ form.entity }}-{{ hash(row.id) }}">
+                        {% if form.type is same as ('requests') %}
+                        <input type="submit" class="btn btn-success" name="action" value="accepter">
+                        <input type="submit" class="btn btn-danger" name="action" value="refuser">
+                        {% else %}
+                        <input type="submit" class="btn btn-danger" name="action" value="supprimer">
+                         {% endif %}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if form.row is empty %}
+    <p>Il n'y a pas (encore!) de {% if form.type is same as ('requests') %}demande de nouveaux{% endif %} {{ form.traductedEntity }}.</p>
+{% endif %}

@@ -2,7 +2,9 @@
 
 namespace OCR5\Entities;
 
-class User
+use OCR5\Interfaces\EntityInterface;
+
+class User implements EntityInterface
 {
     private $id;
     private $username;
@@ -10,6 +12,15 @@ class User
     private $password;
     private $token;
     private $role;
+    private $status;
+    private $added;
+
+    const REQUESTED_TRADUCTION = 'rédacteur';
+    const PUBLIC_FIELDS = [
+        'username' => 'Pseudo',
+        'email' => 'Email',
+        'added' => 'Date d\'ajout'
+    ];
 
     /**
      * @return mixed
@@ -120,6 +131,8 @@ class User
      */
     public function getAdded()
     {
+//        $date = new \DateTime($this->added);
+//        return $date->format('d/m/Y');
         return $this->added;
     }
 
@@ -130,6 +143,14 @@ class User
     {
         $this->added = $added;
     }
-    private $status;
-    private $added;
+
+    public function getRequestedTraduction()
+    {
+        return self::REQUESTED_TRADUCTION;
+    }
+
+    public function getPublicFields()
+    {
+        return self::PUBLIC_FIELDS;
+    }
 }
