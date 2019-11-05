@@ -52,7 +52,7 @@ class DatabaseMySQL
              chapo MEDIUMTEXT NOT NULL,
              status TINYINT( 1 ) NOT NULL,
              added DATETIME NOT NULL,
-             updated DATETIME NOT NULL,
+             updated DATETIME NULL,
              FOREIGN KEY (user_id) REFERENCES user(id)
         )");
 

@@ -8,6 +8,13 @@ class RegistrationManager extends Manager
     {
         $error = false;
 
+        foreach ($formData as $key => $value) {
+            if (empty($formData[$key])) {
+                $this->addFlash('error', 'Merci de remplir tous les champs.');
+                break;
+            }
+        }
+
         if ($result = $this->findStatusContributor($formData['username'], $formData['email'])) {
             // @todo const
 

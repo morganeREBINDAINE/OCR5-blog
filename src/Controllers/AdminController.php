@@ -29,7 +29,6 @@ class AdminController extends Controller
             'contributorsRequests' => $contributorsRequests,
             'articlesRequests' => $articlesRequests,
             'commentsRequests' => $commentsRequests,
-//            'test' => $test
         ]);
     }
 
@@ -72,17 +71,25 @@ class AdminController extends Controller
                     return $this->error('Erreur lors du processus.');
             }
         }
-
     }
 
-    public function writePost() {
-        if(isset($_POST['title'], $_POST['content'], $_POST['chapo'])) {
-            $em = new PostManager();
-            $em->createPost();
+    public function postsList() {
+        return $this->render('back/list-posts', [
+            'posts' => ''
+        ]);
+    }
 
+    public function writePost()
+    {
+        if ($_SERVER['REQUEST_METHOD'] && isset($_POST['title'], $_POST['content'], $_POST['chapo'])) {
+            $em = new PostManager();
+            if (false === $em->checkPostFormErrors($_POST)) {
+                $em->createPost($_POST) ?
+                    $this->addFlash('success', 'Votre article a été ajouté.')
+                    : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
+            }
         }
-        var_dump($_POST);
-        var_dump($_SESSION);
         return $this->render('back/post-form');
     }
+
 }

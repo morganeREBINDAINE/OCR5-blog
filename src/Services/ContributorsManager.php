@@ -6,7 +6,7 @@ class ContributorsManager extends Manager
 {
     public function getValidsContributors()
     {
-        return $this->queryDatabase('SELECT * FROM user WHERE role = "contributor" AND status = 1', [], true);
+        return $this->queryDatabase('SELECT * FROM user WHERE role = "contributor" AND status = 1', [], 'OCR5\Entities\User', true);
     }
 
     public function handleContributor($id, $status)

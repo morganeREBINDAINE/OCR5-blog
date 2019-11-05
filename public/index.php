@@ -15,6 +15,7 @@ $router->map('GET|POST', '/inscription', 'OCR5\Controllers\RegistrationControlle
 $router->map('GET|POST', '/profil', 'OCR5\Controllers\AdminController::profile');
 $router->map('GET', '/gestion-redacteurs', 'OCR5\Controllers\AdminController::contributorsList');
 $router->map('POST', '/demandes-redacteurs', 'OCR5\Controllers\AdminController::contributorsRequests');
+$router->map('GET', '/gestion-articles', 'OCR5\Controllers\AdminController::postsList');
 $router->map('GET|POST', '/rediger-article', 'OCR5\Controllers\AdminController::writePost');
 
 $match = $router->match();
