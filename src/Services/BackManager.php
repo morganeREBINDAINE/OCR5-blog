@@ -9,11 +9,24 @@ class BackManager extends Manager
         return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 0', [], 'OCR5\Entities\\'. ucfirst($entity), true);
     }
 
-    public function getValids($entity)
+    public function getValids($entity, $limit = null, $offset = null)
     {
         $andWhere = $entity === 'user' ? ' AND role = "contributor"' : null;
+        $limit = (null !== $limit) && (null !== $limit) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
 
-        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1' . $andWhere, [], 'OCR5\Entities\\'. ucfirst($entity), true);
+        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1' . $andWhere . $limit, [], 'OCR5\Entities\\'. ucfirst($entity), true);
+    }
+
+    public function getValid($entity, $id) {
+        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1 AND id = :id', [
+            ':id' => $id
+        ], 'OCR5\Entities\\'. ucfirst($entity));
+
+    }
+
+    public function getPaginatedPosts($page, $limit) {
+        $offset = ($page - 1) * $limit;
+        return $this->getValids('post', (int)$limit, $offset);
     }
 
     public function createTable($entity, $valid = false)

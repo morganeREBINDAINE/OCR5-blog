@@ -34,7 +34,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function contributorsList()
+    public function contributorsHandler()
     {
         $form = (new BackManager())->createTable('user', true);
 
@@ -43,7 +43,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function postsList()
+    public function postsHandler()
     {
         $form = (new BackManager())->createTable('post', true);
 

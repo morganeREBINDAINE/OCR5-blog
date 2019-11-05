@@ -13,10 +13,12 @@ $router->map('GET|POST', '/connexion', 'OCR5\Controllers\AuthenticationControlle
 $router->map('POST', '/deconnexion', 'OCR5\Controllers\AuthenticationController::disconnection');
 $router->map('GET|POST', '/inscription', 'OCR5\Controllers\AuthenticationController::registration');
 $router->map('GET|POST', '/profil', 'OCR5\Controllers\AdminController::profile');
-$router->map('GET', '/gestion-redacteurs', 'OCR5\Controllers\AdminController::contributorsList');
-$router->map('GET', '/gestion-articles', 'OCR5\Controllers\AdminController::postsList');
+$router->map('GET', '/gestion-redacteurs', 'OCR5\Controllers\AdminController::contributorsHandler');
+$router->map('GET', '/gestion-articles', 'OCR5\Controllers\AdminController::postsHandler');
 $router->map('GET|POST', '/rediger-article', 'OCR5\Controllers\AdminController::writePost');
 $router->map('POST', '/handle-entities', 'OCR5\Controllers\AdminController::handleEntities');
+$router->map('GET', '/articles', 'OCR5\Controllers\BlogController::postsList');
+$router->map('GET', '/article-[i:id]', 'OCR5\Controllers\BlogController::showPost');
 
 $match = $router->match();
 

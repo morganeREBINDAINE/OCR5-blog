@@ -39,7 +39,7 @@ abstract class Controller
 
     protected function error($message)
     {
-        return $this->render('errors/error.html.twig', [
+        return $this->render('errors/error', [
             'message' => $message
         ]);
     }

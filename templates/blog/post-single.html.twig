@@ -1,0 +1,12 @@
+{% extends 'layouts/full-width.html.twig' %}
+{% block content %}
+    <div class="container">
+        <h1>{{ post.title }}</h1>
+        <div class="post-single">
+            <small>par {{ post.user }}, le {{ post.added }}</small>
+            <small>mis à jour le {{ post.updated }}</small>
+            <p>{{ post.chapo }}</p>
+            <p>{{ post.content }}</p>
+        </div>
+    </div>
+{% endblock %}
