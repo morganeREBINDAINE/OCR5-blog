@@ -1,0 +1,24 @@
+{% extends 'layouts/full-width.html.twig' %}
+{% block content %}
+    <div class="container">
+        <h1>Articles du blog</h1>
+        {% for post in posts %}
+            <div class="post">
+                <h2>{{ post.title }}</h2>
+                <small>par {{ post.user }}, le {{ post.added }}</small>
+                <p>{{ post.chapo }}</p>
+                <a href="/article-{{ post.id }}" class="btn btn-warning">Voir le post</a>
+            </div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-6">
+            {% if page - 1 > 0 %}
+                <a class="btn btn-success" href="?page={{ page - 1 }}">Articles précédents</a>
+            {% endif %}
+            </div>
+            <div class="col-6 text-right">
+                <a class="btn btn-success" href="?page={{ page + 1 }}">Articles suivants</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
