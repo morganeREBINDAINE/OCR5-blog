@@ -14,23 +14,15 @@ class BlogController extends Controller
         return $this->render('blog/home');
     }
 
-    public function postsList()
-    {
+    public function postsList() {
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
         $backManager = new BackManager();
-        $nbPosts = $backManager->countValidsPosts();
-
-        $pagination = $backManager->getPaginatedPosts($page, 2);
-
-        if (empty($pagination['posts'])) {
-            header('location: http://blog/articles');
-            exit;
-        }
+        $posts = $backManager->getPaginatedPosts($page, 2);
 
         return $this->render('blog/posts-list', [
-            'posts' => $pagination['posts'],
-            'page' => $pagination['pages'],
+            'posts' => $posts,
+            'page' => $page
         ]);
     }
 
