@@ -14,12 +14,13 @@ class EntityManager extends Manager
 
     public function createPost($formData, $image)
     {
-        return $this->queryDatabase("INSERT INTO post (user_id, title, content, chapo, image, status, added) VALUES (:user_id, :title, :content, :chapo, :image, 0, NOW())", [
+        return $this->queryDatabase("INSERT INTO post (user_id, title, content, chapo, image, extension, status, added) VALUES (:user_id, :title, :content, :chapo, :image, :extension, 0, NOW())", [
             ':user_id' => $_SESSION['user']->getId(),
             ':title' => $formData['title'],
+            ':content' => $formData['content'],
             ':chapo' => $formData['chapo'],
-            ':image' => $image,
-            ':content' => $formData['content']
+            ':image' => $image['name'],
+            ':extension' => $image['extension'],
         ]);
     }
 
