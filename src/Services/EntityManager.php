@@ -12,12 +12,13 @@ class EntityManager extends Manager
         ]);
     }
 
-    public function createPost($formData)
+    public function createPost($formData, $image)
     {
-        return $this->queryDatabase("INSERT INTO post (user_id, title, content, chapo, status, added) VALUES (:user_id, :title, :content, :chapo, 0, NOW())", [
+        return $this->queryDatabase("INSERT INTO post (user_id, title, content, chapo, image, status, added) VALUES (:user_id, :title, :content, :chapo, :image, 0, NOW())", [
             ':user_id' => $_SESSION['user']->getId(),
             ':title' => $formData['title'],
             ':chapo' => $formData['chapo'],
+            ':image' => $image,
             ':content' => $formData['content']
         ]);
     }
