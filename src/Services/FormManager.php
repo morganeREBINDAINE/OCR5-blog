@@ -13,6 +13,7 @@ class FormManager extends Manager
             return true;
         }
         $handle = new Upload($image['file']);
+
         if ($handle->uploaded) {
             $handle->allowed = ['image/*'];
             $handle->jpeg_quality=100;
@@ -126,5 +127,14 @@ class FormManager extends Manager
             ':username' => $username,
             ':email' => $email
         ]);
+    }
+
+    public function createImage($file)
+    {
+        $image['file'] = $file;
+        $image['extension'] = '.' . array_reverse(explode('.', $file['name']))[0];
+        $image['name'] = $_SESSION['user']->getId() . time();
+
+        return $image;
     }
 }

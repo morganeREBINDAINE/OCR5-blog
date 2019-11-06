@@ -12,6 +12,8 @@ class Post implements EntityInterface
     private $title;
     private $content;
     private $chapo;
+    private $image;
+    private $extension;
     private $status;
     private $added;
     private $updated;
@@ -101,6 +103,38 @@ class Post implements EntityInterface
     public function setChapo($chapo)
     {
         $this->chapo = $chapo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param mixed $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
     }
 
     /**

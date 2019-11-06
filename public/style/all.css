@@ -91,5 +91,10 @@ a:hover {
   padding: 10px;
   margin: 10px auto;
 }
+.post-image {
+  max-width: 450px;
+  height: 200px;
+  background-size: cover;
+}
 
 /*# sourceMappingURL=all.css.map */
