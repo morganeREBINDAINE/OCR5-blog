@@ -19,12 +19,14 @@
         {% endfor %}
         <div class="row">
             <div class="col-6">
-            {% if page - 1 > 0 %}
-                <a class="btn btn-success" href="?page={{ page - 1 }}">Articles précédents</a>
+            {% if page.before > 0 %}
+                <a class="btn btn-success" href="?page={{ page.before }}">Articles précédents</a>
             {% endif %}
             </div>
             <div class="col-6 text-right">
-                <a class="btn btn-success" href="?page={{ page + 1 }}">Articles suivants</a>
+            {% if page.actual < page.max %}
+                <a class="btn btn-success" href="?page={{ page.after }}">Articles suivants</a>
+            {% endif %}
             </div>
         </div>
     </div>
