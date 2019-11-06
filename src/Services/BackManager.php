@@ -14,7 +14,7 @@ class BackManager extends Manager
         $andWhere = $entity === 'user' ? ' AND role = "contributor"' : null;
         $limit = (null !== $limit) && (null !== $limit) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
 
-        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1' . $andWhere . $limit, [], 'OCR5\Entities\\'. ucfirst($entity), true);
+        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1 ORDER BY id DESC' . $andWhere . $limit . ' ', [], 'OCR5\Entities\\'. ucfirst($entity), true);
     }
 
     public function getValid($entity, $id) {

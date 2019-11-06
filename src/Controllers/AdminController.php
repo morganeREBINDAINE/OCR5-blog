@@ -89,12 +89,12 @@ class AdminController extends Controller
     public function writePost()
     {
         if ($_SERVER['REQUEST_METHOD'] && isset($_POST['title'], $_POST['content'], $_POST['chapo'])) {
-            $image['file'] = isset($_FILES['image']) ? $_FILES['image'] : null;
-            $image['name'] = $_SESSION['user']->getUsername() . time();
-
             $em = new FormManager();
+
+            $image = isset($_FILES['image']) ? $em->createImage($_FILES['image']) : null;
+
             if (false === $em->checkPostFormErrors($_POST, $image)) {
-                (new EntityManager())->createPost($_POST, $image['name']) ?
+                (new EntityManager())->createPost($_POST, $image) ?
                     $this->addFlash('success', 'Votre article a été ajouté.')
                     : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
             }
