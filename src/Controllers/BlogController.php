@@ -14,7 +14,8 @@ class BlogController extends Controller
         return $this->render('blog/home');
     }
 
-    public function postsList() {
+    public function postsList()
+    {
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
         $backManager = new BackManager();
@@ -26,7 +27,8 @@ class BlogController extends Controller
         ]);
     }
 
-    public function showPost($id) {
+    public function showPost($id)
+    {
         $post = (new BackManager())->getValid('post', $id);
 
         if (empty($post)) {

@@ -11,7 +11,7 @@
             {{session.flashbag.success}}
         </div>
     {% endif %}
-    <form action="/rediger-article" method="post">
+    <form enctype="multipart/form-data" action="/rediger-article" method="post">
         <div class="form-group">
             <label for="title">Titre </label><small class="text-muted"> (max 50 caractères)</small>
             <input type="text" class="form-control" name="title">
@@ -33,6 +33,15 @@
         {% if session.flashbag.errorChapo %}
             <div class="alert alert-danger">
                 {{session.flashbag.errorChapo}}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="image">Image</label>
+            <input type="file" class="form-control-file" id="image" name="image">
+        </div>
+        {% if session.flashbag.errorImage %}
+            <div class="alert alert-danger">
+                {{session.flashbag.errorImage}}
             </div>
         {% endif %}
         <div class="form-group">
