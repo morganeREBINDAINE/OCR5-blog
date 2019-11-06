@@ -93,8 +93,9 @@ a:hover {
 }
 .post-image {
   max-width: 450px;
-  height: 200px;
+  height: 250px;
   background-size: cover;
+  background-position: center;
 }
 
 /*# sourceMappingURL=all.css.map */

@@ -1,3 +1,4 @@
+.gitignore
 vendor/
 .php_cs.cache
 .idea
@@ -5,4 +6,4 @@ cache/
 todo
 public/style/all.css.map
 public/img/
-.gitignore
+public/doc/

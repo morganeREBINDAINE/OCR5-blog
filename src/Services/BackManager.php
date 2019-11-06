@@ -26,7 +26,14 @@ class BackManager extends Manager
 
     public function getPaginatedPosts($page, $limit) {
         $offset = ($page - 1) * $limit;
-        return $this->getValids('post', (int)$limit, $offset);
+        $pagination['posts'] = $this->getValids('post', (int)$limit, $offset);
+        $pagination['nbPosts'] = $this->queryDatabase('SELECT COUNT(*) as count FROM post WHERE status = 1')['count'];
+        $pagination['pages']['max'] = $pagination['nbPosts'] / $limit;
+        $pagination['pages']['actual'] = $page;
+        $pagination['pages']['before'] = $page - 1;
+        $pagination['pages']['after'] = $page + 1;
+
+        return $pagination;
     }
 
     public function createTable($entity, $valid = false)
@@ -74,5 +81,10 @@ class BackManager extends Manager
         return $this->queryDatabase('UPDATE '.$entity. ' SET status = '.$status.' WHERE id = :id', [
             ':id' => $id
         ]);
+    }
+
+    public function countValidsPosts()
+    {
+        $result = $this->queryDatabase('SELECT COUNT(*) FROM post WHERE status = 1');
     }
 }
