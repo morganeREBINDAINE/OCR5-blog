@@ -18,11 +18,18 @@ class BlogController extends Controller
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
         $backManager = new BackManager();
-        $posts = $backManager->getPaginatedPosts($page, 2);
+        $nbPosts = $backManager->countValidsPosts();
+
+        $pagination = $backManager->getPaginatedPosts($page, 2);
+
+        if (empty($pagination['posts'])) {
+            header('location: http://blog/articles');
+            exit;
+        }
 
         return $this->render('blog/posts-list', [
-            'posts' => $posts,
-            'page' => $page
+            'posts' => $pagination['posts'],
+            'page' => $pagination['pages'],
         ]);
     }
 
