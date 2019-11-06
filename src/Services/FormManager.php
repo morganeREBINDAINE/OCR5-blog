@@ -2,16 +2,53 @@
 
 namespace OCR5\Services;
 
+use Verot\Upload\Upload;
+
 class FormManager extends Manager
 {
-    public function checkPostFormErrors($formData)
+    public function checkImageErrors($image)
+    {
+        if (null === $image['file']) {
+            $this->addFlash('errorImage', 'Vous devez ajouter une image à l\'article.');
+            return true;
+        }
+        $handle = new Upload($image['file']);
+        if ($handle->uploaded) {
+            $handle->allowed = ['image/*'];
+            $handle->jpeg_quality=100;
+            if ($handle->image_src_y > 2000 || $handle->image_src_x > 2500) {
+                $this->addFlash('errorImage', 'L\'image est incorrecte : Largeur maximale de 2500px, hauteur max 2000px.');
+                return true;
+            }
+
+            if ($handle->image_src_x < 500) {
+                $this->addFlash('errorImage', 'L\'image est trop petite : elle doit faire au moins 500px de largeur.');
+                return true;
+            }
+
+            $handle->file_new_name_body   = $image['name'];
+            $handle->process('img/');
+            $handle->image_resize         = true;
+            $handle->image_y              = 500;
+            $handle->image_ratio_x        = true;
+            $handle->file_new_name_body   = $image['name'] . '-mini';
+            $handle->process('img/');
+            if (false === $handle->processed) {
+                $this->addFlash('errorImage', 'Il y a eu une erreur lors de l\'enregistrement de l\'image.');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function checkPostFormErrors($formData, $image)
     {
         $error = false;
 
         foreach ($formData as $key => $value) {
             if (empty($formData[$key])) {
                 $this->addFlash('error', 'Merci de remplir tous les champs.');
-                $error = true;
+                return true;
                 break;
             }
         }
@@ -23,6 +60,10 @@ class FormManager extends Manager
 
         if (strlen($formData['chapo']) > 200 || strlen($formData['chapo']) < 5) {
             $this->addFlash('errorChapo', 'La chapô doit contenir entre 5 et 200 caractères.');
+            $error = true;
+        }
+
+        if ($image !== null && true === $this->checkImageErrors($image)) {
             $error = true;
         }
 

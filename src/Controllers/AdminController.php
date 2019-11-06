@@ -8,6 +8,7 @@ use OCR5\Services\EntityManager;
 use OCR5\Services\EntitiesManager;
 use OCR5\Services\FormManager;
 use OCR5\Services\PostManager;
+use Verot\Upload\Upload;
 
 class AdminController extends Controller
 {
@@ -81,7 +82,6 @@ class AdminController extends Controller
                 }
             }
 
-//            var_dump('token not ok');
             return $this->error('Il y a eu un problème lors de la manipulation des données. Veuillez ré-essayer.');
         }
     }
@@ -89,9 +89,12 @@ class AdminController extends Controller
     public function writePost()
     {
         if ($_SERVER['REQUEST_METHOD'] && isset($_POST['title'], $_POST['content'], $_POST['chapo'])) {
+            $image['file'] = isset($_FILES['image']) ? $_FILES['image'] : null;
+            $image['name'] = $_SESSION['user']->getUsername() . time();
+
             $em = new FormManager();
-            if (false === $em->checkPostFormErrors($_POST)) {
-                (new EntityManager())->createPost($_POST) ?
+            if (false === $em->checkPostFormErrors($_POST, $image)) {
+                (new EntityManager())->createPost($_POST, $image['name']) ?
                     $this->addFlash('success', 'Votre article a été ajouté.')
                     : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
             }
