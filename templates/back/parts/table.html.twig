@@ -22,12 +22,16 @@
                 <td class="text-right">
                     <form action="/handle-entities" method="post">
                         <input type="hidden" name="token" value="{{ form.entity }}-{{ hash(row.id) }}">
-                        {% if form.type is same as ('requests') %}
-                        <input type="submit" class="btn btn-success" name="action" value="accepter">
-                        <input type="submit" class="btn btn-danger" name="action" value="refuser">
-                        {% else %}
-                        <input type="submit" class="btn btn-danger" name="action" value="supprimer">
-                         {% endif %}
+                        {% if form.byUser %}
+                         <input type="submit" class="btn btn-success" name="action" value="modifier">
+                         {% else %}
+                            {% if form.type is same as ('requests') %}
+                            <input type="submit" class="btn btn-success" name="action" value="accepter">
+                            <input type="submit" class="btn btn-danger" name="action" value="refuser">
+                            {% else %}
+                            <input type="submit" class="btn btn-danger" name="action" value="supprimer">
+                             {% endif %}
+                        {% endif %}
                     </form>
                 </td>
             </tr>

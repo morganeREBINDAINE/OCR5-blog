@@ -24,8 +24,8 @@ class AdminController extends Controller
     public function profile()
     {
         $backManager = new BackManager();
-        $contributorsRequests = $backManager->createTable('user');
-        $postsRequests = $backManager->createTable('post');
+        $contributorsRequests = $this->isAdmin() ? $this->createTable('user') : null;
+        $postsRequests = $this->isAdmin() ? $backManager->createTable('post') : null;
         $commentsRequests = $backManager->createTable('comment');
 
         return $this->render('back/profile', [
@@ -37,6 +37,9 @@ class AdminController extends Controller
 
     public function handleEntities($entity)
     {
+        if(false === $this->isAdmin()) {
+            return App::error404();
+        }
         switch ($entity) {
             case 'commentaires':
                 $entity = 'comment';
@@ -95,10 +98,22 @@ class AdminController extends Controller
 
             if (false === $em->checkPostFormErrors($_POST, $image)) {
                 (new EntityManager())->createPost($_POST, $image) ?
-                    $this->addFlash('success', 'Votre article a été ajouté.')
+                    $this->addFlash('success', 'Votre article a été ajouté et doit passer en validation par l\'administratrice avant d\'être publié.')
                     : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
             }
         }
         return $this->render('back/post-form');
+    }
+
+    public function myArticles() {
+        $posts = (new BackManager())->createTable('post', true, $_SESSION['user']->getId());
+//        var_dump($posts);die;
+        return $this->render('back/my-posts', [
+            'posts' => $posts
+        ]);
+    }
+
+    private function isAdmin() {
+        return $_SESSION['user']->getRole() === 'administrator';
     }
 }

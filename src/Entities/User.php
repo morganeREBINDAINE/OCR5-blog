@@ -10,6 +10,7 @@ class User implements EntityInterface
     private $username;
     private $email;
     private $password;
+    private $hash;
     private $token;
     private $role;
     private $status;
@@ -69,6 +70,22 @@ class User implements EntityInterface
     public function setPassword($password)
     {
         $this->password = $password;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param mixed $hash
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
     }
 
     /**

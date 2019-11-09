@@ -9,9 +9,10 @@ class BackManager extends Manager
         return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 0', [], 'OCR5\Entities\\'. ucfirst($entity), true);
     }
 
-    public function getValids($entity, $limit = null, $offset = null)
+    public function getValids($entity, $limit = null, $offset = null, $id = null)
     {
         $andWhere = $entity === 'user' ? ' AND role = "contributor"' : null;
+
         $limit = ((null !== $limit) && (null !== $limit)) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
 //        var_dump('SELECT * FROM '.$entity.' WHERE status = 1 ' . $andWhere . ' ORDER BY id DESC ' . $limit);die;
 
@@ -33,7 +34,7 @@ class BackManager extends Manager
         }
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($page - 1) * $limit;
-        $pagination[$entity . 's'] = $this->getValids($entity, (int)$limit, $offset);
+        $pagination[$entity] = $this->getValids($entity, (int)$limit, $offset);
         $pagination['nb'] = $this->queryDatabase('SELECT COUNT(*) as count FROM ' . $entity . ' WHERE status = 1')['count'];
         $pagination['pages']['max'] = $pagination['nb'] / $limit;
         $pagination['pages']['actual'] = $page;
@@ -41,10 +42,9 @@ class BackManager extends Manager
         $pagination['pages']['after'] = $page + 1;
 
         return $pagination;
-        //if page > max, set
     }
 
-    public function createTable($entity, $valid = false)
+    public function createTable($entity, $valid = false, $id = null)
     {
         if (false === $this->entityExists($entity)) {
             $this->addFlash('errorClass', 'Le formulaire ne peut être créé: vérifier que la classe existe et qu\'elle implémente bien EntityInterface.');
@@ -52,7 +52,12 @@ class BackManager extends Manager
         }
 
         $fqcn = $this->getEntityFQCN($entity);
-        $entities = $valid === true ? $this->getValids($entity) : $this->getRequests($entity);
+        if ($entity === 'post' && is_null($id) === false) {
+            $entities = $this->getPostsByUser($id);
+            $form['byUser'] = true;
+        } else {
+            $entities = $valid === true ? $this->getValids($entity) : $this->getRequests($entity);
+        }
 
         $form['traductedEntity'] = $fqcn::getRequestedTraduction();
         $form['entity'] = $entity;
@@ -85,5 +90,12 @@ class BackManager extends Manager
         return $this->queryDatabase('UPDATE '.$entity. ' SET status = '.$status.' WHERE id = :id', [
             ':id' => $id
         ]);
+    }
+
+    public function getPostsByUser($id) {
+        return $this->queryDatabase('SELECT * FROM post WHERE status = 1 AND id = :id ORDER BY id DESC', [
+            ':id' => $id
+        ], 'OCR5\Entities\Post', true);
+
     }
 }

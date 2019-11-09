@@ -20,7 +20,6 @@ class AuthenticationController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
             $authenticationManager = new AuthenticationManager();
             if ($authenticationManager->checkLogin($_POST['username'], $_POST['password'])) {
-                $authenticationManager = new AuthenticationManager();
                 $authenticationManager->startSession($_POST['username']);
 
                 header('Location: http://blog/profil');
@@ -47,16 +46,13 @@ class AuthenticationController extends Controller
         $message = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['username'], $_POST['password'], $_POST['passwordConfirm'], $_POST['email'])) {
-            $registrationManager = new RegistrationManager();
-            if (false === (new FormManager())->checkRegistrationFormErrors($_POST)) {
-                (new EntityManager())->createContributor($_POST) ?
+            && isset($_POST['username'], $_POST['password'], $_POST['passwordConfirm'], $_POST['email'])
+            && false === (new FormManager())->checkRegistrationFormErrors($_POST)
+        ) {
+            (new EntityManager())->createContributor($_POST) ?
                     $this->addFlash('success', 'Votre candidature a été soumise.')
                     : $this->addFlash('error', 'Il y a eu un soucis durant la soumission de la candidature...');
-            }
-
         }
         return $this->render('authentication/registration');
     }
-
 }

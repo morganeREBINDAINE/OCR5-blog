@@ -31,7 +31,8 @@ abstract class Controller
 
     protected function isConnected()
     {
-        return (new AuthenticationManager())->compareTokens($_SESSION['user']);
+        $authManager = new AuthenticationManager();
+        return $authManager->compareTokens() && $authManager->ensureIdentity();
     }
 
     protected function addFlash($subject, $message)

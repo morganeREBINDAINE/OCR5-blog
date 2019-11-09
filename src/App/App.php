@@ -25,7 +25,7 @@ class App
                 //            'cache' => '../cache'
             ]);
             $twig->addTest(new TwigTest('tokenValid', function () {
-                return (new AuthenticationManager())->compareTokens($_SESSION['user']);
+                return (new AuthenticationManager())->compareTokens();
             }));
             $twig->addFunction(new TwigFunction('css', function ($value) {
                 return 'style/' . $value . '.css';

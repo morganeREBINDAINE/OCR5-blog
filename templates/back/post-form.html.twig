@@ -14,7 +14,7 @@
     <form enctype="multipart/form-data" action="/rediger-article" method="post">
         <div class="form-group">
             <label for="title">Titre </label><small class="text-muted"> (max 50 caractères)</small>
-            <input type="text" class="form-control" name="title">
+            <input type="text" class="form-control" name="title" value="{{ post.title }}">
         </div>
         {% if session.flashbag.errorTitle %}
             <div class="alert alert-danger">
@@ -23,7 +23,7 @@
         {% endif %}
         <div class="form-group">
             <label for="title">Contenu</label>
-            <textarea class="form-control" name="content"></textarea>
+            <textarea class="form-control" name="content">{{ post.content }}</textarea>
             <small class="form-text text-muted">(min 100 caractères).</small>
         </div>
         {% if session.flashbag.errorContent %}
@@ -33,7 +33,7 @@
         {% endif %}
         <div class="form-group">
             <label for="chapo">Chapô</label>
-            <textarea class="form-control" name="chapo"></textarea>
+            <textarea class="form-control" name="chapo">{{ post.chapo }}</textarea>
             <small class="form-text text-muted">Le chapô est affichée sur la liste des articles (max 200 caractères).</small>
         </div>
         {% if session.flashbag.errorChapo %}
