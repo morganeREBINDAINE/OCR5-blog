@@ -14,21 +14,27 @@ class BackManager extends Manager
         $andWhere = $entity === 'user' ? ' AND role = "contributor"' : null;
         $limit = (null !== $limit) && (null !== $limit) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
 
-        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1' . $andWhere . $limit, [], 'OCR5\Entities\\'. ucfirst($entity), true);
+        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1 ' . $andWhere . ' ORDER BY id DESC ' . $limit, [], 'OCR5\Entities\\'. ucfirst($entity), true);
     }
 
-    public function getValid($entity, $id) {
+    public function getValid($entity, $id)
+    {
         return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1 AND id = :id', [
             ':id' => $id
         ], 'OCR5\Entities\\'. ucfirst($entity));
-
     }
 
-    public function getPaginatedPosts($page, $limit) {
+    public function getPagination($entity, $limit)
+    {
+        if (false === $this->entityExists($entity)) {
+            $this->addFlash('error', 'Erreur : l\'entité injectée n\'existe pas.');
+            return null;
+        }
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($page - 1) * $limit;
-        $pagination['posts'] = $this->getValids('post', (int)$limit, $offset);
-        $pagination['nbPosts'] = $this->queryDatabase('SELECT COUNT(*) as count FROM post WHERE status = 1')['count'];
-        $pagination['pages']['max'] = $pagination['nbPosts'] / $limit;
+        $pagination[$entity . 's'] = $this->getValids($entity, (int)$limit, $offset);
+        $pagination['nb'] = $this->queryDatabase('SELECT COUNT(*) as count FROM ' . $entity . ' WHERE status = 1')['count'];
+        $pagination['pages']['max'] = $pagination['nb'] / $limit;
         $pagination['pages']['actual'] = $page;
         $pagination['pages']['before'] = $page - 1;
         $pagination['pages']['after'] = $page + 1;
@@ -38,23 +44,19 @@ class BackManager extends Manager
 
     public function createTable($entity, $valid = false)
     {
-        $fqcn = 'OCR5\Entities\\'.ucfirst($entity);
-        if (false === class_exists($fqcn)
-            || false === in_array('OCR5\Interfaces\EntityInterface', class_implements($fqcn))
-                  ) {
-            // @todo return error
+        if (false === $this->entityExists($entity)) {
             $this->addFlash('errorClass', 'Le formulaire ne peut être créé: vérifier que la classe existe et qu\'elle implémente bien EntityInterface.');
             return null;
         }
 
-
+        $fqcn = $this->getEntityFQCN($entity);
         $entities = $valid === true ? $this->getValids($entity) : $this->getRequests($entity);
 
-        $form['traductedEntity'] = $fqcn::REQUESTED_TRADUCTION;
+        $form['traductedEntity'] = $fqcn::getRequestedTraduction();
         $form['entity'] = $entity;
         $form['type'] = $valid === true ? 'valids' : 'requests';
 
-        $fields = $fqcn::PUBLIC_FIELDS;
+        $fields = $fqcn::getPublicFields();
 
         foreach ($fields as $attribute => $label) {
             $form['labels'][] = $label;

@@ -64,6 +64,11 @@ class FormManager extends Manager
             $error = true;
         }
 
+        if (strlen($formData['content']) < 100) {
+            $this->addFlash('errorContent', 'L\'article doit contenir au moins 50 caractères (actuellement '.strlen($formData['content']).').');
+            $error = true;
+        }
+
         if ($image !== null && true === $this->checkImageErrors($image)) {
             $error = true;
         }
@@ -136,5 +141,37 @@ class FormManager extends Manager
         $image['name'] = $_SESSION['user']->getId() . time();
 
         return $image;
+    }
+
+    public function checkCommentFormErrors($formData)
+    {
+        if ($formData['id'] !== $formData['original_id']) {
+            $this->addFlash('error', 'Merci de ne pas toucher au DOM !');
+            return true;
+        }
+
+        foreach ($formData as $data) {
+            if (empty($data)) {
+                $this->addFlash('error', 'Merci de rentrer tous les champs !');
+                return true;
+            }
+        }
+
+        if (strlen(trim($formData['name'])) < 3) {
+            $this->addFlash('error', 'Merci de rentrer un nom correct !');
+            return true;
+        }
+
+        if (false === filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
+            $this->addFlash('error', 'Merci de rentrer un email valide !');
+            return true;
+        }
+
+        if (strlen($formData['content']) < 10) {
+            $this->addFlash('error', 'Faites un effort... Ce message est trop insignifiant !');
+            return true;
+        }
+
+        return false;
     }
 }

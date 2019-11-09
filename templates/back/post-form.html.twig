@@ -24,7 +24,13 @@
         <div class="form-group">
             <label for="title">Contenu</label>
             <textarea class="form-control" name="content"></textarea>
+            <small class="form-text text-muted">(min 100 caractères).</small>
         </div>
+        {% if session.flashbag.errorContent %}
+            <div class="alert alert-danger">
+                {{session.flashbag.errorContent}}
+            </div>
+        {% endif %}
         <div class="form-group">
             <label for="chapo">Chapô</label>
             <textarea class="form-control" name="chapo"></textarea>

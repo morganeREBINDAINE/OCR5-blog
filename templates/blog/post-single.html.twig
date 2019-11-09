@@ -1,12 +1,61 @@
 {% extends 'layouts/full-width.html.twig' %}
 {% block content %}
     <div class="container">
-        <h1>{{ post.title }}</h1>
         <div class="post-single">
+            <div class="post-single-image" style="background-image: url('{{ img(post.image)  }}{{ post.extension }}')"></div>
+            <h1>{{ post.title }}</h1>
             <small>par {{ post.user }}, le {{ post.added }}</small>
+            {% if post.updated %}
             <small>mis à jour le {{ post.updated }}</small>
+            {% endif %}
             <p>{{ post.chapo }}</p>
             <p>{{ post.content }}</p>
+        </div>
+        <div class="post-comments">
+            <h2>Commentaires</h2>
+            {% if session.flashbag.error %}
+                <div class="alert alert-danger">
+                    {{session.flashbag.error}}
+                </div>
+            {% endif %}
+            {% if session.flashbag.success %}
+                <div class="alert alert-success">
+                    {{session.flashbag.success}}
+                </div>
+            {% endif %}
+            <form method="post" class="post-comments-form">
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label for="name">Nom</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="email">Email</label>
+                        <input type="text" class="form-control" name="email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="content">Contenu</label>
+                    <textarea class="form-control" name="content"></textarea>
+                </div>
+                <div class="form-group text-right">
+                    <input type="hidden" class="form-control" name="id" value="{{ post.id }}">
+                    <button type="submit" class="btn btn-success">Envoyer</button>
+                </div>
+            </form>
+            {% if comments is not empty %}
+                {% for comment in comments %}
+                    <div class="comment">
+                        <span>Par {{ comment.name }}, le {{ comment.added }}</span>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                {% endfor %}
+            {{  include ('blog/parts/_pagination.html.twig') }}
+            {% else %}
+                <div class="alert alert-warning">
+                    Il n'y a pas de commentaires.
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

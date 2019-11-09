@@ -18,15 +18,6 @@ class Post implements EntityInterface
     private $added;
     private $updated;
 
-    const REQUESTED_TRADUCTION = 'article';
-    const PUBLIC_FIELDS        = [
-        'user' => 'Pseudo de l\'auteur',
-        'title' => 'Titre',
-        'chapo' => 'Chapô',
-        'added' => 'Date ajout',
-        'updated' => 'Dernière modification'
-    ];
-
     public function __construct()
     {
         $this->status = 0;
@@ -185,13 +176,19 @@ class Post implements EntityInterface
         $this->updated = $updated;
     }
 
-    public function getRequestedTraduction()
+    public static function getRequestedTraduction()
     {
-        return self::REQUESTED_TRADUCTION;
+        return 'article';
     }
 
-    public function getPublicFields()
+    public static function getPublicFields()
     {
-        return self::PUBLIC_FIELDS;
+        return [
+            'user' => 'Pseudo de l\'auteur',
+            'title' => 'Titre',
+            'chapo' => 'Chapô',
+            'added' => 'Date ajout',
+            'updated' => 'Dernière modification'
+        ];
     }
 }
