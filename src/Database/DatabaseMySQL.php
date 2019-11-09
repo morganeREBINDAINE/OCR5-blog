@@ -37,11 +37,13 @@ class DatabaseMySQL
 
         $pdo->exec("CREATE TABLE IF NOT EXISTS comment (
              id INT( 11 ) AUTO_INCREMENT PRIMARY KEY,
+             post_id INT NOT NULL,
              name VARCHAR( 50 ) NOT NULL, 
              email VARCHAR( 255 ) NOT NULL,
              content MEDIUMTEXT NOT NULL,
              status TINYINT( 1 ) NOT NULL,
-             added DATETIME NOT NULL
+             added DATETIME NOT NULL,
+             FOREIGN KEY (post_id) REFERENCES post(id)
         )");
 
         $pdo->exec("CREATE TABLE IF NOT EXISTS post (

@@ -4,6 +4,6 @@ namespace OCR5\Interfaces;
 
 interface EntityInterface
 {
-    public function getRequestedTraduction();
-    public function getPublicFields();
+    public static function getRequestedTraduction();
+    public static function getPublicFields();
 }

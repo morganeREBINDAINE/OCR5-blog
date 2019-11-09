@@ -6,7 +6,7 @@
             <div class="post">
                 <div class="row">
                     <div class="col-md-5">
-                        <div class="post-image" style="background-image: url('{{ img(post.image)  }}{{ post.extension }}')"></div>
+                        <div class="post-image" style="background-image: url('{{ img(post.image)  }}-mini{{ post.extension }}')"></div>
                     </div>
                     <div class="col-md-7">
                         <h2>{{ post.title }}</h2>
@@ -17,17 +17,6 @@
                 </div>
             </div>
         {% endfor %}
-        <div class="row">
-            <div class="col-6">
-            {% if page.before > 0 %}
-                <a class="btn btn-success" href="?page={{ page.before }}">Articles précédents</a>
-            {% endif %}
-            </div>
-            <div class="col-6 text-right">
-            {% if page.actual < page.max %}
-                <a class="btn btn-success" href="?page={{ page.after }}">Articles suivants</a>
-            {% endif %}
-            </div>
-        </div>
+        {{  include ('blog/parts/_pagination.html.twig') }}
     </div>
 {% endblock %}

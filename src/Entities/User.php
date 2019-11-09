@@ -15,13 +15,6 @@ class User implements EntityInterface
     private $status;
     private $added;
 
-    const REQUESTED_TRADUCTION = 'rédacteur';
-    const PUBLIC_FIELDS = [
-        'username' => 'Pseudo',
-        'email' => 'Email',
-        'added' => 'Date d\'ajout'
-    ];
-
     /**
      * @return mixed
      */
@@ -144,13 +137,17 @@ class User implements EntityInterface
         $this->added = $added;
     }
 
-    public function getRequestedTraduction()
+    public static function getRequestedTraduction()
     {
-        return self::REQUESTED_TRADUCTION;
+        return 'rédacteur';
     }
 
-    public function getPublicFields()
+    public static function getPublicFields()
     {
-        return self::PUBLIC_FIELDS;
+        return [
+            'username' => 'Pseudo',
+            'email' => 'Email',
+            'added' => 'Date d\'ajout'
+        ];
     }
 }
