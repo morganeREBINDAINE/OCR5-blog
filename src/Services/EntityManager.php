@@ -32,4 +32,14 @@ class EntityManager extends Manager
             ':email' => $formData['email']
         ]);
     }
+
+    public function createComment($formData)
+    {
+        return $this->queryDatabase("INSERT INTO comment (post_id, name, email, content, status, added) VALUES (:post, :name, :email, :content, 0, NOW())", [
+            ':post' => $formData['id'],
+            ':name' => $formData['name'],
+            ':email' => $formData['email'],
+            ':content' => $formData['content'],
+        ]);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\App\App;
 use OCR5\Entities\Post;
 use OCR5\Services\BackManager;
 use OCR5\Services\EntityManager;
@@ -25,8 +26,7 @@ class AdminController extends Controller
         $backManager = new BackManager();
         $contributorsRequests = $backManager->createTable('user');
         $postsRequests = $backManager->createTable('post');
-
-        $commentsRequests = null;
+        $commentsRequests = $backManager->createTable('comment');
 
         return $this->render('back/profile', [
             'contributorsRequests' => $contributorsRequests,
@@ -35,25 +35,30 @@ class AdminController extends Controller
         ]);
     }
 
-    public function contributorsHandler()
+    public function handleEntities($entity)
     {
-        $form = (new BackManager())->createTable('user', true);
+        switch ($entity) {
+            case 'commentaires':
+                $entity = 'comment';
+                break;
+            case 'redacteurs':
+                $entity = 'user';
+                break;
+            case 'articles':
+                $entity = 'post';
+                break;
+            default:
+                return App::error404();
+        }
+
+        $table = (new BackManager())->createTable($entity, true);
 
         return $this->render('back/list', [
-            'form' => $form
+            'form' => $table
         ]);
     }
 
-    public function postsHandler()
-    {
-        $form = (new BackManager())->createTable('post', true);
-
-        return $this->render('back/list', [
-            'form' => $form
-        ]);
-    }
-
-    public function handleEntities()
+    public function actionEntities()
     {
         if (isset($_POST['token'], $_POST['action'])) {
             $token = $_POST['token'];
@@ -65,20 +70,16 @@ class AdminController extends Controller
 
                 switch ($_POST['action']) {
                     case 'accepter':
-                        if ($backManager->handleEntity($entity, $id, 1)) {
-                            $traduction = $className::REQUESTED_TRADUCTION;
-                        }
+                        $backManager->handleEntity($entity, $id, 1);
                         header('location:'.$_SESSION['last_page']);
                         break;
                     case 'refuser':
                     case 'supprimer':
-                        if ($backManager->handleEntity($entity, $id, 2)) {
-                            $traduction = $className::REQUESTED_TRADUCTION;
-                        }
+                        $backManager->handleEntity($entity, $id, 2);
                         header('location:'.$_SESSION['last_page']);
                         break;
                     default:
-                        die('set this case in AdminController::handleEntities()');
+                        App::error404();
                 }
             }
 
@@ -88,9 +89,8 @@ class AdminController extends Controller
 
     public function writePost()
     {
-        if ($_SERVER['REQUEST_METHOD'] && isset($_POST['title'], $_POST['content'], $_POST['chapo'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'], $_POST['content'], $_POST['chapo'])) {
             $em = new FormManager();
-
             $image = isset($_FILES['image']) ? $em->createImage($_FILES['image']) : null;
 
             if (false === $em->checkPostFormErrors($_POST, $image)) {

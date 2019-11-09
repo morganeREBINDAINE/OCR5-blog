@@ -2,10 +2,9 @@
 
 namespace OCR5\Controllers;
 
-use OCR5\App\App;
 use OCR5\Services\BackManager;
-use OCR5\Services\UserManager;
-use Twig\TwigFunction;
+use OCR5\Services\EntityManager;
+use OCR5\Services\FormManager;
 
 class BlogController extends Controller
 {
@@ -14,13 +13,10 @@ class BlogController extends Controller
         return $this->render('blog/home');
     }
 
-    public function postsList() {
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-
+    public function postsList()
+    {
         $backManager = new BackManager();
-        $nbPosts = $backManager->countValidsPosts();
-
-        $pagination = $backManager->getPaginatedPosts($page, 2);
+        $pagination = $backManager->getPagination('post', 2);
 
         if (empty($pagination['posts'])) {
             header('location: http://blog/articles');
@@ -35,14 +31,31 @@ class BlogController extends Controller
 
     public function showPost($id)
     {
-        $post = (new BackManager())->getValid('post', $id);
+        $backManager = new BackManager();
+        $formManager = new FormManager();
+        $post = $backManager->getValid('post', $id);
+        $pagination = $backManager->getPagination('comment', 4);
 
         if (empty($post)) {
             return $this->error('Aucun article ne correspond à cet article.');
         }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_POST['name'], $_POST['email'], $_POST['content'], $_POST['id'])
+        ) {
+            $_POST['original_id'] = $id;
+
+            if (false === $formManager->checkCommentFormErrors($_POST)) {
+                (new EntityManager())->createComment($_POST) ?
+                    $this->addFlash('success', 'Votre commentaire a été ajouté: il doit être validé avant d\'être publié.')
+                    : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
+            }
+        }
+
         return $this->render('blog/post-single', [
             'post' => $post,
+            'comments' => $pagination['comments'],
+            'page' => $pagination['pages']
         ]);
     }
 }
