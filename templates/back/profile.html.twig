@@ -7,23 +7,22 @@
         </div>
         <div class="col-md-9 text-right">
             {% if session.user.role is same as ('administrator') %}
-            <a href="/gestion-redacteurs" class="btn btn-success">Gérer les rédacteurs</a>
-            <a href="/gestion-articles" class="btn btn-success">Gérer les articles</a>
-            <a href="/gestion-commentaires" class="btn btn-success">Gérer les commentaires</a>
+                <a href="/gestion-redacteurs" class="btn btn-success">Gérer les rédacteurs</a>
+                <a href="/gestion-articles" class="btn btn-success">Gérer les articles</a>
+                <a href="/gestion-commentaires" class="btn btn-success">Gérer les commentaires</a>
             {% endif %}
-            <a href="/mes-articles">Voir mes articles</a>
-
+            <a href="/mes-articles" class="btn btn-success">Voir mes articles</a>
         </div>
     </div>
     {% if session.user.role is same as ('administrator') %}
-    <div class="contributors-requests">
-        {{  include ('back/parts/table.html.twig', {form: contributorsRequests}) }}
-    </div>
-    <div class="articles-requests">
-        {{  include ('back/parts/table.html.twig', {form: postsRequests}) }}
-    </div>
+        <div class="contributors-requests">
+            {{ include ('back/parts/table.html.twig', {form: contributorsRequests, title: 'Liste des rédacteurs'}) }}
+        </div>
+        <div class="articles-requests">
+            {{ include ('back/parts/table.html.twig', {form: postsRequests, title: 'Liste des articles'}) }}
+        </div>
     {% endif %}
     <div class="comments-requests">
-        {{  include ('back/parts/table.html.twig', {form: commentsRequests}) }}
+        {{ include ('back/parts/table.html.twig', {form: commentsRequests, title: 'Liste des commentaires'}) }}
     </div>
 {% endblock %}

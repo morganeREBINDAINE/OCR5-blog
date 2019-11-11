@@ -2,6 +2,7 @@
 
 namespace OCR5\Entities;
 
+use DateTime;
 use OCR5\Interfaces\EntityInterface;
 
 class User implements EntityInterface
@@ -141,9 +142,7 @@ class User implements EntityInterface
      */
     public function getAdded()
     {
-//        $date = new \DateTime($this->added);
-//        return $date->format('d/m/Y');
-        return $this->added;
+        return (new DateTime($this->updated))->format('d/m/Y H:i');
     }
 
     /**

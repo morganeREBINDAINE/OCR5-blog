@@ -18,11 +18,6 @@ class BlogController extends Controller
         $backManager = new BackManager();
         $pagination = $backManager->getPagination('post', 2);
 
-        if (empty($pagination['posts'])) {
-            header('location: http://blog/articles');
-            exit;
-        }
-
         return $this->render('blog/posts-list', [
             'posts' => $pagination['posts'],
             'page' => $pagination['pages'],

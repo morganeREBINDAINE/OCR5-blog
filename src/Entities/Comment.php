@@ -2,6 +2,7 @@
 
 namespace OCR5\Entities;
 
+use DateTime;
 use OCR5\Interfaces\EntityInterface;
 
 class Comment implements EntityInterface
@@ -115,7 +116,7 @@ class Comment implements EntityInterface
      */
     public function getAdded()
     {
-        return $this->added;
+        return (new DateTime($this->added))->format('d/m/Y H:i');
     }
 
     /**

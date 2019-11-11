@@ -53,6 +53,7 @@ class DatabaseMySQL
              content MEDIUMTEXT NOT NULL,
              chapo MEDIUMTEXT NOT NULL,
              image VARCHAR( 255 ) NOT NULL,
+             extension VARCHAR( 255 ) NOT NULL,
              status TINYINT( 1 ) NOT NULL,
              added DATETIME NOT NULL,
              updated DATETIME NULL,

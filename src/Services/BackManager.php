@@ -14,7 +14,6 @@ class BackManager extends Manager
         $andWhere = $entity === 'user' ? ' AND role = "contributor"' : null;
 
         $limit = ((null !== $limit) && (null !== $limit)) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
-//        var_dump('SELECT * FROM '.$entity.' WHERE status = 1 ' . $andWhere . ' ORDER BY id DESC ' . $limit);die;
 
         return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1 ' . $andWhere . ' ORDER BY id DESC ' . $limit, [], 'OCR5\Entities\\'. ucfirst($entity), true);
     }
@@ -34,7 +33,7 @@ class BackManager extends Manager
         }
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($page - 1) * $limit;
-        $pagination[$entity] = $this->getValids($entity, (int)$limit, $offset);
+        $pagination[$entity . 's'] = $this->getValids($entity, (int)$limit, $offset);
         $pagination['nb'] = $this->queryDatabase('SELECT COUNT(*) as count FROM ' . $entity . ' WHERE status = 1')['count'];
         $pagination['pages']['max'] = $pagination['nb'] / $limit;
         $pagination['pages']['actual'] = $page;
@@ -54,7 +53,7 @@ class BackManager extends Manager
         $fqcn = $this->getEntityFQCN($entity);
         if ($entity === 'post' && is_null($id) === false) {
             $entities = $this->getPostsByUser($id);
-            $form['byUser'] = true;
+            $form['postsByUser'] = true;
         } else {
             $entities = $valid === true ? $this->getValids($entity) : $this->getRequests($entity);
         }
@@ -84,7 +83,8 @@ class BackManager extends Manager
 
     public function handleEntity($entity, $id, $status)
     {
-        if (false === in_array($status, [0,1])) {
+        $entity = $this->getEntityFQCN($entity);
+        if (false === in_array($status, [1,2,3])) {
             return null;
         }
         return $this->queryDatabase('UPDATE '.$entity. ' SET status = '.$status.' WHERE id = :id', [
@@ -93,9 +93,15 @@ class BackManager extends Manager
     }
 
     public function getPostsByUser($id) {
-        return $this->queryDatabase('SELECT * FROM post WHERE status = 1 AND id = :id ORDER BY id DESC', [
+        return $this->queryDatabase('SELECT * FROM post WHERE status = 1 AND user_id = :id ORDER BY id DESC', [
             ':id' => $id
         ], 'OCR5\Entities\Post', true);
+    }
 
+    public function getPost($id)
+    {
+        return $this->queryDatabase('SELECT * FROM post WHERE id = :id', [
+            ':id' => $id
+        ], 'OCR5\Entities\Post');
     }
 }
