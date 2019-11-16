@@ -2,24 +2,17 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\App\AppManager;
 use Twig\TwigFunction;
 
-class BlogController
+class BlogController extends Controller
 {
     public function home()
     {
-//        require ('../templates/test.html');die();
-        $loader = new \Twig\Loader\FilesystemLoader('../templates');
-        $twig = new \Twig\Environment($loader, [
-//            'cache' => '../cache'
-        ]);
-        $twig->addFunction(new TwigFunction('css', function($value) {
-            return  'style/' .$value. '.css';
-        }));
-        $twig->addFunction(new TwigFunction('img', function($value) {
-            return  'img/' .$value;
-        }));
+        $database = AppManager::getDatabase();
+        return $this->render('blog/home');
 
-        echo $twig->render('blog/home.html.twig');
     }
+
+
 }
