@@ -2,7 +2,7 @@
 
 namespace OCR5\Services;
 
-class AuthenticationManager extends Manager
+class AuthenticationManager
 {
     public function startSession($username)
     {

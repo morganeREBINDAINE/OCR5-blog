@@ -58,5 +58,4 @@ class AuthenticationController extends Controller
         }
         return $this->render('authentication/registration');
     }
-
 }

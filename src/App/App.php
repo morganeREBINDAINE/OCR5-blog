@@ -7,7 +7,6 @@ use OCR5\Services\AuthenticationManager;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
-use Twig\TwigTest;
 
 class App
 {
@@ -58,5 +57,8 @@ class App
     {
         header("HTTP/1.0 404 Not Found");
         echo(App::getTwig())->render('errors/404.html.twig');
+    }
+
+    public static function init() {
     }
 }
