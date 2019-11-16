@@ -26,6 +26,7 @@ class AdminController extends Controller
         $backManager = new BackManager();
         $contributorsRequests = $this->isAdmin() ? $this->createTable('user') : null;
         $postsRequests = $this->isAdmin() ? $backManager->createTable('post') : null;
+
         $commentsRequests = $backManager->createTable('comment');
 
         return $this->render('back/profile', [
@@ -84,6 +85,7 @@ class AdminController extends Controller
                         // no break
                     case 'supprimer':
                         $backManager->handleEntity($entity, $id, 3);
+
                         break;
                     default:
                         App::error404();
@@ -124,6 +126,7 @@ class AdminController extends Controller
                 }
                 $entityManager->createPost($_POST, $image) ?
                     $this->addFlash('success', 'Votre article a été ajouté et doit passer en validation par l\'administratrice avant d\'être publié.')
+
                     : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
             }
         }

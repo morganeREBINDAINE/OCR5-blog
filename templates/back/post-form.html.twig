@@ -12,6 +12,7 @@
         </div>
     {% endif %}
     <form enctype="multipart/form-data" method="post">
+
         <div class="form-group">
             <label for="title">Titre </label><small class="text-muted"> (max 50 caractères)</small>
             <input type="text" class="form-control" name="title" value="{{ post.title }}">
@@ -24,6 +25,7 @@
         <div class="form-group">
             <label for="title">Contenu</label>
             <textarea class="form-control" name="content">{{ post.content }}</textarea>
+
             <small class="form-text text-muted">(min 100 caractères).</small>
         </div>
         {% if session.flashbag.errorContent %}
@@ -48,6 +50,7 @@
                 <input type="checkbox" name="keep-image">
                 <label for="keep-image">Je souhaite conserver l'image</label>
             {% endif %}
+
             <input type="file" class="form-control-file" id="image" name="image">
         </div>
         {% if session.flashbag.errorImage %}

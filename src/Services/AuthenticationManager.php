@@ -5,6 +5,7 @@ namespace OCR5\Services;
 use OCR5\Entities\User;
 
 class AuthenticationManager extends Manager
+
 {
     public function startSession($username)
     {

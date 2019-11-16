@@ -15,7 +15,6 @@ $router->map('GET', '/articles', 'OCR5\Controllers\BlogController::postsList');
 $router->map('GET|POST', '/connexion', 'OCR5\Controllers\AuthenticationController::connection');
 $router->map('POST', '/deconnexion', 'OCR5\Controllers\AuthenticationController::disconnection');
 $router->map('GET|POST', '/inscription', 'OCR5\Controllers\AuthenticationController::registration');
-
 $router->map('GET', '/profil', 'OCR5\Controllers\AdminController::profile');
 $router->map('GET', '/gestion-[a:frenchEntity]', 'OCR5\Controllers\AdminController::handleEntities');
 $router->map('GET|POST', '/rediger-article', 'OCR5\Controllers\AdminController::writePost');

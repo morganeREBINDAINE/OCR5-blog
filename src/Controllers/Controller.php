@@ -11,8 +11,6 @@ use Twig\Error\SyntaxError;
 
 abstract class Controller
 {
-    use FlashbagTrait;
-
     protected function render($template, $vars = [])
     {
         $templatePath = $template . '.html.twig';
