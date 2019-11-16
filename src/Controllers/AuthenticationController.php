@@ -3,6 +3,8 @@
 namespace OCR5\Controllers;
 
 use OCR5\Services\AuthenticationManager;
+use OCR5\Services\EntityManager;
+use OCR5\Services\FormManager;
 use OCR5\Services\Manager;
 
 class AuthenticationController extends Controller
@@ -19,7 +21,7 @@ class AuthenticationController extends Controller
             $authenticationManager = new AuthenticationManager();
             if ($authenticationManager->checkLogin($_POST['username'], $_POST['password'])) {
                 $authenticationManager = new AuthenticationManager();
-                $authenticationManager->registerSession($_POST['username']);
+                $authenticationManager->startSession($_POST['username']);
 
                 header('Location: http://blog/profil');
                 exit();
@@ -36,4 +38,24 @@ class AuthenticationController extends Controller
         header('location: http://blog/');
     }
 
+    public function registration()
+    {
+        if ($this->isConnected()) {
+            header('location: http://blog/');
+        }
+
+        $message = null;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_POST['username'], $_POST['password'], $_POST['passwordConfirm'], $_POST['email'])) {
+            $registrationManager = new RegistrationManager();
+            if (false === (new FormManager())->checkRegistrationFormErrors($_POST)) {
+                (new EntityManager())->createContributor($_POST) ?
+                    $this->addFlash('success', 'Votre candidature a été soumise.')
+                    : $this->addFlash('error', 'Il y a eu un soucis durant la soumission de la candidature...');
+            }
+
+        }
+        return $this->render('authentication/registration');
+    }
 }

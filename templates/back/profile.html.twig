@@ -1,66 +1,23 @@
 {% extends 'layouts/full-width.html.twig' %}
 {% block content %}
-        <h1>Profil de {{ session.username }}</h1>
-        <div class="row">
-            <div class="col-md-3">
-                <a href="/rediger-article" class="btn btn-success">Rédiger un article</a>
-
-            </div>
-            <div class="col-md-9 text-right">
-                <a href="/gestion-redacteurs" class="btn btn-success">Gérer les rédacteurs</a>
-                <a href="/gestion-articles" class="btn btn-success">Gérer les articles</a>
-                <a href="/gestion-commentaires" class="btn btn-success">Gérer les commentaires</a>
-
-            </div>
+    <h1>Profil de {{ session.user.username }}</h1>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="/rediger-article" class="btn btn-success">Rédiger un article</a>
         </div>
-        <div class="contributors-requests">
-            <h2>Demandes d'ajout de rédacteurs</h2>
-            {% if session.flashbag.contributor is defined %}
-                <div class="alert alert-success">
-                    {{ session.flashbag.contributor }}
-                </div>
-            {% endif %}
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Pseudo</th>
-                            <th>Email</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <form action="/demandes-redacteurs" method="post">
-                    {% for contributor in contributorsRequests %}
-                        <tr>
-                            <td>{{ contributor.username }}</td>
-                            <td>{{ contributor.email }}</td>
-                            <td>{{ contributor.added | date('d/m/Y') }}</td>
-                            <td>
-                                <input type="hidden" name="hash" value="{{ hash(contributor.id) }}">
-                                <input type="hidden" name="id" value="{{ contributor.id }}">
-                                <input type="submit" class="btn btn-success" name="action" value="accepter">
-                                <input type="submit" class="btn btn-danger" name="action" value="refuser">
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </form>
-                    </tbody>
-                </table>
-                {% if contributorsRequests is empty %}
-                    <p>Il n'y a pas de nouvelles demandes de rédacteurs.</p>
-                {% endif %}
-            </div>
-        </div>
-        <div class="articles-requests">
-            {% for article in articlesRequests %}
+        <div class="col-md-9 text-right">
+            <a href="/gestion-redacteurs" class="btn btn-success">Gérer les rédacteurs</a>
+            <a href="/gestion-articles" class="btn btn-success">Gérer les articles</a>
+            <a href="/gestion-commentaires" class="btn btn-success">Gérer les commentaires</a>
 
-            {% endfor %}
         </div>
-        <div class="comments-requests">
-            {% for comment in commentsRequests %}
-
-            {% endfor %}
-        </div>
+    </div>
+    <div class="contributors-requests">
+        {{  include ('back/parts/table.html.twig', {form: contributorsRequests}) }}
+    </div>
+    <div class="articles-requests">
+        {{  include ('back/parts/table.html.twig', {form: postsRequests}) }}
+    </div>
+    <div class="comments-requests">
+    </div>
 {% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'layouts/full-width.html.twig' %}
+
+{% block content %}
+    {% if session.flashbag.errorClass is defined %}
+        <div class="alert alert-danger">{{ session.flashbag.errorClass }}</div>
+    {% endif %}
+    {% if form.entity is defined %}
+        {% include 'back/parts/table.html.twig' %}
+    {% endif %}
+{% endblock %}

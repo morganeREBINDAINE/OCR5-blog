@@ -3,11 +3,12 @@
 namespace OCR5\App;
 
 use OCR5\Database\DatabaseMySQL;
+use OCR5\Services\AuthenticationManager;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
-class AppManager
+class App
 {
     private static $twig;
     private static $database;
@@ -22,6 +23,9 @@ class AppManager
             $twig   = new Environment($loader, [
                 //            'cache' => '../cache'
             ]);
+            $twig->addTest(new TwigTest('tokenValid', function () {
+                return (new AuthenticationManager())->compareTokens($_SESSION['user']);
+            }));
             $twig->addFunction(new TwigFunction('css', function ($value) {
                 return 'style/' . $value . '.css';
             }));
@@ -29,7 +33,7 @@ class AppManager
                 return 'img/' . $value;
             }));
             $twig->addFunction(new TwigFunction('hash', function ($value) {
-                return password_hash((string)$value, PASSWORD_DEFAULT);
+                return base64_encode($value.'         ').'-'. password_hash((string)$value, PASSWORD_DEFAULT);
             }));
             $twig->addGlobal('session', $_SESSION);
             $twig->addGlobal('post', $_POST);
@@ -52,7 +56,7 @@ class AppManager
     public static function error404()
     {
         header("HTTP/1.0 404 Not Found");
-        echo(AppManager::getTwig())->render('errors/404.html.twig');
+        echo(App::getTwig())->render('errors/404.html.twig');
     }
 
     public static function init() {

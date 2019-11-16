@@ -44,27 +44,30 @@ class DatabaseMySQL
              added DATETIME NOT NULL
         )");
 
-        $pdo->exec("CREATE TABLE IF NOT EXISTS article (
+        $pdo->exec("CREATE TABLE IF NOT EXISTS post (
              id INT( 11 ) AUTO_INCREMENT PRIMARY KEY,
              user_id INT( 11 ) NOT NULL, 
              title VARCHAR( 255 ) NOT NULL,
              content MEDIUMTEXT NOT NULL,
-             excerpt MEDIUMTEXT NOT NULL,
+             chapo MEDIUMTEXT NOT NULL,
              status TINYINT( 1 ) NOT NULL,
              added DATETIME NOT NULL,
-             updated DATETIME NOT NULL,
+             updated DATETIME NULL,
              FOREIGN KEY (user_id) REFERENCES user(id)
         )");
 
         return $pdo;
     }
 
-    public function query($query, $parameters = [], $multiple = false)
+    public function query($query, $parameters = [], $className = null, $multiple = false)
     {
         $statement = $this->pdo->prepare($query);
         $result = $statement->execute($parameters);
 
         if (substr($query, 0, 6) === "SELECT") {
+            if (class_exists($className)) {
+                $statement->setFetchMode(PDO::FETCH_CLASS, $className);
+            }
             return ($multiple === true) ? $statement->fetchAll() : $statement->fetch();
         }
 
