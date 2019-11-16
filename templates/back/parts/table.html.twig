@@ -1,8 +1,4 @@
-{% if form.type is same as ('requests') %}
-    <h2>Demandes d'ajout de {{ form.traductedEntity }}</h2>
-{% elseif form.type is same as ('valids') %}
-<h1>Liste des {{ form.traductedEntity }} :</h1>
-{% endif %}
+<h1>{{ title }}</h1>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -20,14 +16,18 @@
                     <td>{{ data }}</td>
                 {% endfor %}
                 <td class="text-right">
-                    <form action="/handle-entities" method="post">
+                    <form action="/action-entities" method="post">
                         <input type="hidden" name="token" value="{{ form.entity }}-{{ hash(row.id) }}">
-                        {% if form.type is same as ('requests') %}
-                        <input type="submit" class="btn btn-success" name="action" value="accepter">
-                        <input type="submit" class="btn btn-danger" name="action" value="refuser">
+                        {% if form.postsByUser %}
+                        <input type="submit" class="btn btn-success" name="action" value="modifier">
                         {% else %}
-                        <input type="submit" class="btn btn-danger" name="action" value="supprimer">
-                         {% endif %}
+                            {% if form.type is same as ('requests') %}
+                            <input type="submit" class="btn btn-success" name="action" value="accepter">
+                            <input type="submit" class="btn btn-danger" name="action" value="refuser">
+                            {% else %}
+                            <input type="submit" class="btn btn-danger" name="action" value="supprimer">
+                            {% endif %}
+                        {% endif %}
                     </form>
                 </td>
             </tr>

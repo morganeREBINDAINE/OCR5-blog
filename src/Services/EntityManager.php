@@ -24,6 +24,18 @@ class EntityManager extends Manager
         ]);
     }
 
+    public function updatePost($formData, $image, $id)
+    {
+        return $this->queryDatabase("UPDATE post SET title = :title, content = :content, chapo = :chapo, image = :image, extension = :extension, updated = NOW() WHERE id = :id", [
+            ':title' => $formData['title'],
+            ':content' => $formData['content'],
+            ':chapo' => $formData['chapo'],
+            ':image' => $image['name'],
+            ':extension' => $image['extension'],
+            ':id' => $id,
+        ]);
+    }
+
     public function createContributor($formData)
     {
         return $this->queryDatabase("INSERT INTO user (username, email, password, role, status, added) VALUES (:username, :email, :password, 'contributor', 0, NOW())", [

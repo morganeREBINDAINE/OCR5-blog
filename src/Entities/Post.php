@@ -21,7 +21,6 @@ class Post implements EntityInterface
     public function __construct()
     {
         $this->status = 0;
-        $this->added = (new DateTime())->format('Y-m-d H:i:s');
     }
 
     /**
@@ -149,7 +148,7 @@ class Post implements EntityInterface
      */
     public function getAdded(): string
     {
-        return $this->added;
+        return (new DateTime($this->added))->format('d/m/Y H:i');
     }
 
     /**
@@ -165,7 +164,7 @@ class Post implements EntityInterface
      */
     public function getUpdated()
     {
-        return $this->updated;
+        return (new DateTime($this->updated))->format('d/m/Y H:i');
     }
 
     /**

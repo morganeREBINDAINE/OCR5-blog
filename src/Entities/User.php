@@ -2,6 +2,7 @@
 
 namespace OCR5\Entities;
 
+use DateTime;
 use OCR5\Interfaces\EntityInterface;
 
 class User implements EntityInterface
@@ -10,6 +11,7 @@ class User implements EntityInterface
     private $username;
     private $email;
     private $password;
+    private $hash;
     private $token;
     private $role;
     private $status;
@@ -74,6 +76,22 @@ class User implements EntityInterface
     /**
      * @return mixed
      */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param mixed $hash
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getToken()
     {
         return $this->token;
@@ -124,9 +142,7 @@ class User implements EntityInterface
      */
     public function getAdded()
     {
-//        $date = new \DateTime($this->added);
-//        return $date->format('d/m/Y');
-        return $this->added;
+        return (new DateTime($this->updated))->format('d/m/Y H:i');
     }
 
     /**

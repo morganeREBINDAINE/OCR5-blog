@@ -18,11 +18,6 @@ class BlogController extends Controller
         $backManager = new BackManager();
         $pagination = $backManager->getPagination('post', 2);
 
-        if (empty($pagination['posts'])) {
-            header('location: http://blog/articles');
-            exit;
-        }
-
         return $this->render('blog/posts-list', [
             'posts' => $pagination['posts'],
             'page' => $pagination['pages'],
@@ -44,6 +39,20 @@ class BlogController extends Controller
             && isset($_POST['name'], $_POST['email'], $_POST['content'], $_POST['id'])
         ) {
             $_POST['original_id'] = $id;
+
+            if (false === $formManager->checkCommentFormErrors($_POST)) {
+                (new EntityManager())->createComment($_POST) ?
+                    $this->addFlash('success', 'Votre commentaire a été ajouté: il doit être validé avant d\'être publié.')
+                    : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
+            }
+        }
+
+        return $this->render('blog/post-single', [
+            'post' => $post,
+            'comments' => $pagination['comments'],
+            'page' => $pagination['pages']
+        ]);
+    }
 
             if (false === $formManager->checkCommentFormErrors($_POST)) {
                 (new EntityManager())->createComment($_POST) ?

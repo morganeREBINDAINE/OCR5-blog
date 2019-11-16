@@ -46,6 +46,11 @@ class FormManager extends Manager
     {
         $error = false;
 
+        if ($image === null) {
+            $this->addFlash('error', 'Merci de mettre une image.');
+            return true;
+        }
+
         foreach ($formData as $key => $value) {
             if (empty($formData[$key])) {
                 $this->addFlash('error', 'Merci de remplir tous les champs.');
@@ -136,6 +141,9 @@ class FormManager extends Manager
 
     public function createImage($file)
     {
+        if($file['error'] === 4) {
+            return null;
+        }
         $image['file'] = $file;
         $image['extension'] = '.' . array_reverse(explode('.', $file['name']))[0];
         $image['name'] = $_SESSION['user']->getId() . time();

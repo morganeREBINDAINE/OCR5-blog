@@ -9,12 +9,16 @@ class BackManager extends Manager
         return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 0', [], 'OCR5\Entities\\'. ucfirst($entity), true);
     }
 
-    public function getValids($entity, $limit = null, $offset = null)
+    public function getValids($entity, $limit = null, $offset = null, $id = null)
+
     {
         $andWhere = $entity === 'user' ? ' AND role = "contributor"' : null;
         $limit = (null !== $limit) && (null !== $limit) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
 
+        $limit = ((null !== $limit) && (null !== $limit)) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
+
         return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1 ' . $andWhere . ' ORDER BY id DESC ' . $limit, [], 'OCR5\Entities\\'. ucfirst($entity), true);
+
     }
 
     public function getValid($entity, $id)
@@ -28,6 +32,7 @@ class BackManager extends Manager
     {
         if (false === $this->entityExists($entity)) {
             $this->addFlash('error', 'Erreur : l\'entité injectée n\'existe pas.');
+
             return null;
         }
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -42,7 +47,7 @@ class BackManager extends Manager
         return $pagination;
     }
 
-    public function createTable($entity, $valid = false)
+    public function createTable($entity, $valid = false, $id = null)
     {
         if (false === $this->entityExists($entity)) {
             $this->addFlash('errorClass', 'Le formulaire ne peut être créé: vérifier que la classe existe et qu\'elle implémente bien EntityInterface.');
@@ -50,7 +55,13 @@ class BackManager extends Manager
         }
 
         $fqcn = $this->getEntityFQCN($entity);
-        $entities = $valid === true ? $this->getValids($entity) : $this->getRequests($entity);
+        if ($entity === 'post' && is_null($id) === false) {
+            $entities = $this->getPostsByUser($id);
+            $form['postsByUser'] = true;
+        } else {
+            $entities = $valid === true ? $this->getValids($entity) : $this->getRequests($entity);
+        }
+
 
         $form['traductedEntity'] = $fqcn::getRequestedTraduction();
         $form['entity'] = $entity;
@@ -77,7 +88,8 @@ class BackManager extends Manager
 
     public function handleEntity($entity, $id, $status)
     {
-        if (false === in_array($status, [0,1])) {
+        $entity = $this->getEntityFQCN($entity);
+        if (false === in_array($status, [1,2,3])) {
             return null;
         }
         return $this->queryDatabase('UPDATE '.$entity. ' SET status = '.$status.' WHERE id = :id', [
@@ -85,8 +97,17 @@ class BackManager extends Manager
         ]);
     }
 
-    public function countValidsPosts()
+    public function getPostsByUser($id) {
+        return $this->queryDatabase('SELECT * FROM post WHERE status = 1 AND user_id = :id ORDER BY id DESC', [
+            ':id' => $id
+        ], 'OCR5\Entities\Post', true);
+    }
+
+    public function getPost($id)
     {
-        $result = $this->queryDatabase('SELECT COUNT(*) FROM post WHERE status = 1');
+        return $this->queryDatabase('SELECT * FROM post WHERE id = :id', [
+            ':id' => $id
+        ], 'OCR5\Entities\Post');
+
     }
 }
