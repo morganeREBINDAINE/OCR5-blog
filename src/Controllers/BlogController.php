@@ -11,6 +11,7 @@ class BlogController extends Controller
     {
         $database = AppManager::getDatabase();
         return $this->render('blog/home');
+
     }
 
 
