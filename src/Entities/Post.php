@@ -9,6 +9,7 @@ class Post implements EntityInterface
 {
     private $id;
     private $user_id;
+    private $username;
     private $title;
     private $content;
     private $chapo;
@@ -20,8 +21,25 @@ class Post implements EntityInterface
 
     public function __construct()
     {
-        $this->status = 0;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param mixed $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+
 
     /**
      * @return mixed
@@ -145,10 +163,11 @@ class Post implements EntityInterface
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function getAdded(): string
     {
-        return (new DateTime($this->added))->format('d/m/Y H:i');
+        return (new DateTime($this->added))->format('d/m/Y à H:i');
     }
 
     /**
@@ -161,10 +180,11 @@ class Post implements EntityInterface
 
     /**
      * @return mixed
+     * @throws \Exception
      */
     public function getUpdated()
     {
-        return (new DateTime($this->updated))->format('d/m/Y H:i');
+        return ($this->updated !== null) ? (new DateTime($this->updated))->format('d/m/Y à H:i'):null;
     }
 
     /**
@@ -183,7 +203,7 @@ class Post implements EntityInterface
     public static function getPublicFields()
     {
         return [
-            'user' => 'Pseudo de l\'auteur',
+            'username' => 'Pseudo de l\'auteur',
             'title' => 'Titre',
             'chapo' => 'Chapô',
             'added' => 'Date ajout',

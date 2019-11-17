@@ -2,6 +2,7 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\Repository\PostRepository;
 use OCR5\Services\BackManager;
 use OCR5\Services\EntityManager;
 use OCR5\Services\FormManager;
@@ -28,8 +29,11 @@ class BlogController extends Controller
     {
         $backManager = new BackManager();
         $formManager = new FormManager();
-        $post = $backManager->getValid('post', $id);
-        $pagination = $backManager->getPagination('comment', 4);
+        $postRepository = new PostRepository();
+
+        $post = $postRepository->getValid($id);
+
+        $pagination = $backManager->getPaginatedCommentsByPost(4, $id);
 
         if (empty($post)) {
             return $this->error('Aucun article ne correspond à cet article.');
@@ -54,17 +58,4 @@ class BlogController extends Controller
         ]);
     }
 
-            if (false === $formManager->checkCommentFormErrors($_POST)) {
-                (new EntityManager())->createComment($_POST) ?
-                    $this->addFlash('success', 'Votre commentaire a été ajouté: il doit être validé avant d\'être publié.')
-                    : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
-            }
-        }
-
-        return $this->render('blog/post-single', [
-            'post' => $post,
-            'comments' => $pagination['comments'],
-            'page' => $pagination['pages']
-        ]);
-    }
 }

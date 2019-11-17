@@ -142,7 +142,7 @@ class User implements EntityInterface
      */
     public function getAdded()
     {
-        return (new DateTime($this->updated))->format('d/m/Y H:i');
+        return (new DateTime($this->added))->format('d/m/Y H:i');
     }
 
     /**

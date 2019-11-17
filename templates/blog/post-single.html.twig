@@ -4,7 +4,7 @@
         <div class="post-single">
             <div class="post-single-image" style="background-image: url('{{ img(post.image)  }}{{ post.extension }}')"></div>
             <h1>{{ post.title }}</h1>
-            <small>par {{ post.user }}, le {{ post.added }}</small>
+            <small>par {{ post.username }}, le {{ post.added }}</small>
             {% if post.updated %}
             <small>mis à jour le {{ post.updated }}</small>
             {% endif %}

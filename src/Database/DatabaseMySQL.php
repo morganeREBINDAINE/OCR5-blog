@@ -68,6 +68,8 @@ class DatabaseMySQL
         $statement = $this->pdo->prepare($query);
         $result = $statement->execute($parameters);
 
+//        var_dump($className);die;
+
         if (substr($query, 0, 6) === "SELECT") {
             if (class_exists($className)) {
                 $statement->setFetchMode(PDO::FETCH_CLASS, $className);
