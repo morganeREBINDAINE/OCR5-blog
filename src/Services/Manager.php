@@ -8,19 +8,10 @@ use OCR5\Traits\FlashbagTrait;
 class Manager
 {
     use FlashbagTrait;
+    use DatabaseTrait;
 
-    private $db;
-
-    public function __construct()
+    public function entityExists($entity)
     {
-        $this->db = App::getDatabase();
-    }
-
-    public function queryDatabase($query, $parameters = [], $className=null, $multiple = false) {
-        return $this->db->query($query, $parameters, $className, $multiple);
-    }
-
-    public function entityExists($entity) {
         $fqcn = $this->getEntityFQCN($entity);
 
         return (class_exists($fqcn)
@@ -28,7 +19,14 @@ class Manager
         );
     }
 
-    public function getEntityFQCN($entity) {
-        return 'OCR5\Entities\\'.ucfirst($entity);
+    public function getEntityFQCN($entity)
+    {
+        return '\OCR5\Entities\\'.ucfirst($entity);
+    }
+
+    public function getRepository($entity)
+    {
+        $repository = 'OCR5\Repository\\'.ucfirst($entity).'Repository';
+        return new $repository();
     }
 }

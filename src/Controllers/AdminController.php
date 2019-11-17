@@ -24,10 +24,11 @@ class AdminController extends Controller
     public function profile()
     {
         $backManager = new BackManager();
-        $contributorsRequests = $this->isAdmin() ? $this->createTable('user') : null;
+        $contributorsRequests = $this->isAdmin() ? $backManager->createTable('user') : null;
         $postsRequests = $this->isAdmin() ? $backManager->createTable('post') : null;
 
         $commentsRequests = $backManager->createTable('comment');
+//        var_dump($commentsRequests);die;
 
         return $this->render('back/profile', [
             'contributorsRequests' => $contributorsRequests,
@@ -141,7 +142,7 @@ class AdminController extends Controller
 
         return $this->render('back/my-posts', [
             'posts' => $posts,
-            'title' => 'Mes articles'
+            'title' => 'Mes articles en ligne'
         ]);
     }
 

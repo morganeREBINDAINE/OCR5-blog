@@ -5,7 +5,6 @@ namespace OCR5\Controllers;
 use OCR5\Services\AuthenticationManager;
 use OCR5\Services\EntityManager;
 use OCR5\Services\FormManager;
-use OCR5\Services\Manager;
 
 class AuthenticationController extends Controller
 {
@@ -19,8 +18,8 @@ class AuthenticationController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
             $authenticationManager = new AuthenticationManager();
-            if ($authenticationManager->checkLogin($_POST['username'], $_POST['password'])) {
-                $authenticationManager->startSession($_POST['username']);
+            if ($user = $authenticationManager->checkLogin($_POST['username'], $_POST['password'])) {
+                $authenticationManager->startSession($user);
 
                 header('Location: http://blog/profil');
                 exit();

@@ -2,21 +2,27 @@
 {% block content %}
     <div class="container">
         <h1>Articles du blog</h1>
-        {% for post in posts %}
-            <div class="post">
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="post-image" style="background-image: url('{{ img(post.image)  }}-mini{{ post.extension }}')"></div>
-                    </div>
-                    <div class="col-md-7">
-                        <h2>{{ post.title }}</h2>
-                        <small>par {{ post.user }}, le {{ post.added }}</small>
-                        <p>{{ post.chapo }}</p>
-                        <a href="/article-{{ post.id }}" class="btn btn-warning">Voir le post</a>
+        {% if posts is not empty %}
+            {% for post in posts %}
+                <div class="post">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="post-image" style="background-image: url('{{ img(post.image)  }}-mini{{ post.extension }}')"></div>
+                        </div>
+                        <div class="col-md-7">
+                            <h2>{{ post.title }}</h2>
+                            <small>par {{ post.user }}, le {{ post.added }}</small>
+                            <p>{{ post.chapo }}</p>
+                            <a href="/article-{{ post.id }}" class="btn btn-warning">Voir le post</a>
+                        </div>
                     </div>
                 </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-warning">
+                Il n'y a pas d'articles.
             </div>
-        {% endfor %}
+        {% endif %}
         {{  include ('blog/parts/_pagination.html.twig') }}
     </div>
 {% endblock %}

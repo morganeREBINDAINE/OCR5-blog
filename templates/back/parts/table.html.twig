@@ -13,7 +13,7 @@
         {% for row in form.row %}
             <tr>
                 {% for data in row.datas %}
-                    <td>{{ data }}</td>
+                    <td>{{ data | raw }}</td>
                 {% endfor %}
                 <td class="text-right">
                     <form action="/action-entities" method="post">

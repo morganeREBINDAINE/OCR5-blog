@@ -3,28 +3,33 @@
 namespace OCR5\Services;
 
 use OCR5\Entities\User;
+use OCR5\Repository\UserRepository;
 
 class AuthenticationManager extends Manager
-
 {
-    public function startSession($username)
+    private $userRepository;
+
+    public function __construct()
     {
-        $user = $this->queryDatabase('SELECT * FROM user WHERE username = :attribute', [
-            ':attribute' =>$username
-        ], 'user');
-        $token = md5($username . mt_rand());
+        $this->userRepository = $this->getRepository('user');
+    }
+
+    public function startSession($user)
+    {
+        $token = md5($user->getUsername() . mt_rand());
         $user->setToken(base64_encode($token));
         $_SESSION['user'] = $user;
         $_SESSION['user']->setHash(password_hash($user->getId() . $user->getRole() . $user->getId(), PASSWORD_DEFAULT));
+//        die(var_dump($user));
 
-        return $this->saveToken($username, password_hash($token, PASSWORD_BCRYPT));
+        return $this->userRepository->saveToken($user->getUsername(), password_hash($token, PASSWORD_BCRYPT));
     }
 
     public function checkLogin($username, $password)
     {
-        $result = $this->getPasswordByValidUsername($username);
+        $user = $this->userRepository->getValid($username);
 
-        return password_verify($password, $result['password']);
+        return ($user !== false && password_verify($password, $user->getPassword())) ? $user : null;
     }
 
     public function compareTokens()
@@ -36,23 +41,22 @@ class AuthenticationManager extends Manager
         }
         $sessionUser = $_SESSION['user'];
         $sessionToken = base64_decode($sessionUser->getToken());
-        $result = $this->queryDatabase('SELECT token FROM user WHERE id = :id', [
-            ':id' => $sessionUser->getId()
-        ]);
+        $dbUser = $this->userRepository->getValid($sessionUser->getUsername());
 
-        if (false === password_verify($sessionToken, $result['token'])) {
+        if (false === password_verify($sessionToken, $dbUser->getToken())) {
             unset($_SESSION['user']);
             return false;
         }
         return true;
     }
 
-    public function ensureIdentity() {
+    public function ensureIdentity()
+    {
         $sessionUser = $_SESSION['user'];
         $backManager = new BackManager();
         $user = $backManager->getValid('user', $_SESSION['user']->getId());
 
-        return password_verify($user->getId() . $user->getRole() . $user->getId(),$sessionUser->getHash());
+        return password_verify($user->getId() . $user->getRole() . $user->getId(), $sessionUser->getHash());
     }
 
     private function saveToken($username, $token)
@@ -61,10 +65,5 @@ class AuthenticationManager extends Manager
             ':username' => $username,
             ':token' => $token
         ]);
-    }
-
-    private function getPasswordByValidUsername($username)
-    {
-        return $this->queryDatabase("SELECT password FROM user WHERE username = :username AND status = 1", [':username' => $username]);
     }
 }
