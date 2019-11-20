@@ -10,7 +10,7 @@ class FormManager extends Manager
     {
         if (null === $image['file']) {
             $this->addFlash('errorImage', 'Vous devez ajouter une image à l\'article.');
-            return true;
+            return false;
         }
         $handle = new Upload($image['file']);
 
@@ -19,12 +19,12 @@ class FormManager extends Manager
             $handle->jpeg_quality=100;
             if ($handle->image_src_y > 2000 || $handle->image_src_x > 2500) {
                 $this->addFlash('errorImage', 'L\'image est incorrecte : Largeur maximale de 2500px, hauteur max 2000px.');
-                return true;
+                return false;
             }
 
             if ($handle->image_src_x < 500) {
                 $this->addFlash('errorImage', 'L\'image est trop petite : elle doit faire au moins 500px de largeur.');
-                return true;
+                return false;
             }
 
             $handle->file_new_name_body   = $image['name'];
@@ -36,10 +36,10 @@ class FormManager extends Manager
             $handle->process('img/');
             if (false === $handle->processed) {
                 $this->addFlash('errorImage', 'Il y a eu une erreur lors de l\'enregistrement de l\'image.');
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public function checkPostFormErrors($formData, $image)
@@ -69,12 +69,12 @@ class FormManager extends Manager
             $error = true;
         }
 
-        if (strlen($formData['content']) < 100) {
+        if (strlen($formData['content']) < 50) {
             $this->addFlash('errorContent', 'L\'article doit contenir au moins 50 caractères (actuellement '.strlen($formData['content']).').');
             $error = true;
         }
 
-        if ($image !== null && true === $this->checkImageErrors($image)) {
+        if ($image['status'] === 'new' && false === $this->checkImageErrors($image)) {
             $error = true;
         }
 
@@ -141,12 +141,13 @@ class FormManager extends Manager
 
     public function createImage($file)
     {
-        if($file['error'] === 4) {
+        if ($file['error'] === 4) {
             return null;
         }
         $image['file'] = $file;
         $image['extension'] = '.' . array_reverse(explode('.', $file['name']))[0];
         $image['name'] = $_SESSION['user']->getId() . time();
+        $image['status'] = 'new';
 
         return $image;
     }

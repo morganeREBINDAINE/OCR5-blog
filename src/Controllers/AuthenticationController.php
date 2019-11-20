@@ -2,6 +2,7 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\Handler\UserHandler;
 use OCR5\Services\AuthenticationManager;
 use OCR5\Services\EntityManager;
 use OCR5\Services\FormManager;
@@ -48,7 +49,7 @@ class AuthenticationController extends Controller
             && isset($_POST['username'], $_POST['password'], $_POST['passwordConfirm'], $_POST['email'])
             && false === (new FormManager())->checkRegistrationFormErrors($_POST)
         ) {
-            (new EntityManager())->createContributor($_POST) ?
+            (new UserHandler())->create($_POST) ?
                     $this->addFlash('success', 'Votre candidature a été soumise.')
                     : $this->addFlash('error', 'Il y a eu un soucis durant la soumission de la candidature...');
         }

@@ -65,10 +65,10 @@ class DatabaseMySQL
 
     public function query($query, $parameters = [], $className = null, $multiple = false)
     {
+//        var_dump($query);
         $statement = $this->pdo->prepare($query);
         $result = $statement->execute($parameters);
 
-//        var_dump($className);die;
 
         if (substr($query, 0, 6) === "SELECT") {
             if (class_exists($className)) {

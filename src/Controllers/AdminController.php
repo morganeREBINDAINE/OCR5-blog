@@ -4,6 +4,7 @@ namespace OCR5\Controllers;
 
 use OCR5\App\App;
 use OCR5\Entities\Post;
+use OCR5\Handler\PostHandler;
 use OCR5\Services\BackManager;
 use OCR5\Services\EntityManager;
 use OCR5\Services\EntitiesManager;
@@ -44,12 +45,15 @@ class AdminController extends Controller
         }
         switch ($entity) {
             case 'commentaires':
+                $title = 'Liste des commentaires en ligne';
                 $entity = 'comment';
                 break;
             case 'redacteurs':
+                $title = 'Liste des rédacteurs valides';
                 $entity = 'user';
                 break;
             case 'articles':
+                $title = 'Liste des articles en ligne';
                 $entity = 'post';
                 break;
             default:
@@ -59,6 +63,7 @@ class AdminController extends Controller
         $table = (new BackManager())->createTable($entity, true);
 
         return $this->render('back/list', [
+            'title' => $title,
             'form' => $table
         ]);
     }
@@ -70,28 +75,27 @@ class AdminController extends Controller
             list($entity, $id, $hash) = explode('-', $token);
 
             if (password_verify($id= (int)base64_decode($id), $hash)) {
-                $backManager = new BackManager();
+                $repository = 'OCR5\Repository\\'.ucfirst($entity).'Repository';
+                $repository = new $repository();
 
                 switch ($_POST['action']) {
                     case 'accepter':
-                        $backManager->handleEntity($entity, $id, 1);
-                        header('location:'.$_SESSION['last_page']);
-                        break;
+                        $repository->changeStatus($id, 1);
+                        $this->redirect($_SESSION['last_page']);
                     case 'modifier':
-                        header('location: http://blog/modifier-article-'.$id);
-                        exit;
+                        $this->redirect('/modifier-article-'.$id);
                     break;
                     case 'refuser':
-                        $backManager->handleEntity($entity, $id, 2);
-                        // no break
+                        $repository->changeStatus($id, 2);
+                        break;
                     case 'supprimer':
-                        $backManager->handleEntity($entity, $id, 3);
+                        $repository->changeStatus($id, 3);
 
                         break;
                     default:
                         App::error404();
                 }
-                header('location:'.$_SESSION['last_page']);
+                $this->redirect($_SESSION['last_page']);
             }
 
             return $this->error('Il y a eu un problème lors de la manipulation des données. Veuillez ré-essayer.');
@@ -100,39 +104,43 @@ class AdminController extends Controller
 
     public function writePost($id = null)
     {
+        $repository = new PostHandler();
         if ($id) {
-            $post = (new BackManager())->getPost($id);
+            $post = $repository->get($id);
 
-            if ($post === false || $post->getUser() !== $_SESSION['user']->getId()) {
+            if ($post === false || ($this->isAdmin() === false && $post->getUser() !== $_SESSION['user']->getId())) {
                 return $this->error('Cet article n\'existe pas ou bien vous n\'avez pas de droits dessus.');
             }
         }
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'], $_POST['content'], $_POST['chapo'], $_FILES['image'])) {
             $em = new FormManager();
-            $image = $em->createImage($_FILES['image']);
+
+            // @todo changer
+            if (isset($_POST['keep-image']) && $_POST['keep-image'] === 'on') {
+                $image['extension'] = $post->getExtension();
+                $image['name'] = $post->getImage();
+                $image['status'] = 'keep';
+            } else {
+                $image = $em->createImage($_FILES['image']);
+            }
 
             if (false === $em->checkPostFormErrors($_POST, $image)) {
-                $entityManager = new EntityManager();
                 if ($id) {
-                    if (isset($_POST['keep-image']) && $_POST['keep-image'] === true) {
-                        $image['image'] = $post->getImage();
-                        $image['extension'] = $post->getExtension();
-                    }
-                    $entityManager->updatePost($_POST, $image, $id) ?
-                        $this->addFlash('success', 'Votre article a été modifié.')
-                        : $this->addFlash('error', 'Il y a eu un problème lors de la modification de votre article.');
+                    $repository->change($id, $_POST, $image);
+                    $this->addFlash('success', 'Votre article a été modifié.');
                     header("Refresh:0");
                     exit();
                 }
-                $entityManager->createPost($_POST, $image) ?
-                    $this->addFlash('success', 'Votre article a été ajouté et doit passer en validation par l\'administratrice avant d\'être publié.')
 
-                    : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
+                $_POST['img'] = $image;
+                $repository->create($_POST);
+                $this->addFlash('success', 'Votre article a été ajouté et doit être validé par l\'administratrice avant d\'être publié.');
+                $this->redirect('/profil');
             }
         }
+
         return $this->render('back/post-form', [
-            'post' => false === is_null($id) ? $post : $_POST
+            'post' => null !== $id ? $post : $_POST
         ]);
     }
 

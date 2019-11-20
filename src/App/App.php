@@ -24,6 +24,7 @@ class App
             $twig   = new Environment($loader, [
                 //            'cache' => '../cache'
             ]);
+            $twig->addExtension(new \Twig\Extension\DebugExtension());
             $twig->addTest(new TwigTest('tokenValid', function () {
                 return (new AuthenticationManager())->compareTokens();
             }));
@@ -76,9 +77,9 @@ class App
         $router->map('GET', '/profil', 'OCR5\Controllers\AdminController::profile');
         $router->map('GET', '/gestion-[a:frenchEntity]', 'OCR5\Controllers\AdminController::handleEntities');
         $router->map('GET|POST', '/rediger-article', 'OCR5\Controllers\AdminController::writePost');
+        $router->map('GET|POST', '/modifier-article-[i:id]', 'OCR5\Controllers\AdminController::writePost');
         $router->map('POST', '/action-entities', 'OCR5\Controllers\AdminController::actionEntities');
         $router->map('GET', '/mes-articles', 'OCR5\Controllers\AdminController::myArticles');
-        $router->map('GET|POST', '/modifier-article-[i:id]', 'OCR5\Controllers\AdminController::writePost');
 
         $match = $router->match();
 

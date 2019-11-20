@@ -6,11 +6,6 @@
             {{session.flashbag.error}}
         </div>
     {% endif %}
-    {% if session.flashbag.success %}
-        <div class="alert alert-success">
-            {{session.flashbag.success}}
-        </div>
-    {% endif %}
     <form enctype="multipart/form-data" method="post">
 
         <div class="form-group">
@@ -26,7 +21,7 @@
             <label for="title">Contenu</label>
             <textarea class="form-control" name="content">{{ post.content }}</textarea>
 
-            <small class="form-text text-muted">(min 100 caractères).</small>
+            <small class="form-text text-muted">(min 50 caractères).</small>
         </div>
         {% if session.flashbag.errorContent %}
             <div class="alert alert-danger">
@@ -47,7 +42,7 @@
             <label for="image">Image</label>
             {% if post.image is not empty %}
                 <img src="{{ img(post.image ~ '-mini' ~ post.extension) }}">
-                <input type="checkbox" name="keep-image">
+                <input type="checkbox" name="keep-image" checked>
                 <label for="keep-image">Je souhaite conserver l'image</label>
             {% endif %}
 

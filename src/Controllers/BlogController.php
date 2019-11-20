@@ -2,7 +2,8 @@
 
 namespace OCR5\Controllers;
 
-use OCR5\Repository\PostRepository;
+use OCR5\Handler\CommentHandler;
+use OCR5\Handler\PostHandler;
 use OCR5\Services\BackManager;
 use OCR5\Services\EntityManager;
 use OCR5\Services\FormManager;
@@ -18,7 +19,7 @@ class BlogController extends Controller
     {
         $backManager = new BackManager();
         $pagination = $backManager->getPagination('post', 2);
-
+        
         return $this->render('blog/posts-list', [
             'posts' => $pagination['posts'],
             'page' => $pagination['pages'],
@@ -29,11 +30,12 @@ class BlogController extends Controller
     {
         $backManager = new BackManager();
         $formManager = new FormManager();
-        $postRepository = new PostRepository();
+        $postHandler = new PostHandler();
 
-        $post = $postRepository->getValid($id);
+        $post = $postHandler->getValid($id);
+//        var_dump($post);
 
-        $pagination = $backManager->getPaginatedCommentsByPost(4, $id);
+        $pagination = $backManager->getPagination('comment', 4, 'post_id = '. (int)$id);
 
         if (empty($post)) {
             return $this->error('Aucun article ne correspond à cet article.');
@@ -45,7 +47,7 @@ class BlogController extends Controller
             $_POST['original_id'] = $id;
 
             if (false === $formManager->checkCommentFormErrors($_POST)) {
-                (new EntityManager())->createComment($_POST) ?
+                (new CommentHandler())->create($_POST) ?
                     $this->addFlash('success', 'Votre commentaire a été ajouté: il doit être validé avant d\'être publié.')
                     : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
             }

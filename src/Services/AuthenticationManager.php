@@ -3,7 +3,7 @@
 namespace OCR5\Services;
 
 use OCR5\Entities\User;
-use OCR5\Repository\UserRepository;
+use OCR5\Handler\UserHandler;
 
 class AuthenticationManager extends Manager
 {
@@ -11,7 +11,7 @@ class AuthenticationManager extends Manager
 
     public function __construct()
     {
-        $this->userRepository = $this->getRepository('user');
+        $this->userRepository = $this->getHandler('user');
     }
 
     public function startSession($user)
@@ -53,17 +53,9 @@ class AuthenticationManager extends Manager
     public function ensureIdentity()
     {
         $sessionUser = $_SESSION['user'];
-        $backManager = new BackManager();
-        $user = $backManager->getValid('user', $_SESSION['user']->getId());
+
+        $user = $this->userRepository->getValid($sessionUser->getUsername());
 
         return password_verify($user->getId() . $user->getRole() . $user->getId(), $sessionUser->getHash());
-    }
-
-    private function saveToken($username, $token)
-    {
-        return $this->queryDatabase("UPDATE user SET token = :token WHERE username = :username", [
-            ':username' => $username,
-            ':token' => $token
-        ]);
     }
 }

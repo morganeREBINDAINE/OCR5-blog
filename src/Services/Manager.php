@@ -24,9 +24,9 @@ class Manager
         return '\OCR5\Entities\\'.ucfirst($entity);
     }
 
-    public function getRepository($entity)
+    public function getHandler($entity)
     {
-        $repository = 'OCR5\Repository\\'.ucfirst($entity).'Repository';
-        return new $repository();
+        $handler = '\OCR5\Handler\\'.ucfirst($entity).'Handler';
+        return new $handler();
     }
 }
