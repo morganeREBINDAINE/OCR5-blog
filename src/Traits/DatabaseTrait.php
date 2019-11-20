@@ -8,13 +8,9 @@ trait DatabaseTrait
 {
     private $db;
 
-    public function __construct()
-    {
-        $this->db = new DatabaseMySQL();
-    }
-
     public function queryDatabase($query, $parameters = [], $className = null, $multiple = false)
     {
+//        var_dump($query);
         return $this->db->query($query, $parameters, $className, $multiple);
     }
 
@@ -22,7 +18,11 @@ trait DatabaseTrait
     {
         $where = $where ? ' WHERE ' . $where :null;
 
-        return $this->queryDatabase('SELECT '.$target.' FROM '.$table.$where.' ORDER BY id DESC ' . $limit, $params, '\OCR5\Entities\\'.ucfirst($table), $multiple);
+        $order = $multiple ? ' ORDER BY '.substr($table,0,1).'.id DESC ' : null;
+
+//        var_dump('SELECT '.$target.' FROM '.$table.$where.$order. $limit);die;
+
+        return $this->queryDatabase('SELECT '.$target.' FROM '.$table.$where.$order. $limit, $params, '\OCR5\Entities\\'.ucfirst(explode(' ', $table)[0]), $multiple);
     }
 
     public function update($table, $fields, $where, $params = [])

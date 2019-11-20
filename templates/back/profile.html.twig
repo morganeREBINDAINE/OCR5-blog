@@ -1,6 +1,9 @@
 {% extends 'layouts/full-width.html.twig' %}
 {% block content %}
     <h1>Profil de {{ session.user.username }}</h1>
+    {% if session.flashbag.success is defined %}
+        <div class="alert alert-success">{{ session.flashbag.success }}</div>
+    {% endif %}
     <div class="row">
         <div class="col-md-3">
             <a href="/rediger-article" class="btn btn-success">Rédiger un article</a>

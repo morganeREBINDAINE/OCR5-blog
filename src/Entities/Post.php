@@ -7,6 +7,11 @@ use OCR5\Interfaces\EntityInterface;
 
 class Post implements EntityInterface
 {
+    const STATUS_REQUEST = 0;
+    const STATUS_ONLINE  = 1;
+    const STATUS_REFUSED = 2;
+    const STATUS_DELETED = 3;
+
     private $id;
     private $user_id;
     private $username;
@@ -204,6 +209,16 @@ class Post implements EntityInterface
     {
         return [
             'username' => 'Pseudo de l\'auteur',
+            'title' => 'Titre',
+            'chapo' => 'Chapô',
+            'added' => 'Date ajout',
+//            'updated' => 'Dernière modification'
+        ];
+    }
+
+    public static function getPrivateFields()
+    {
+        return [
             'title' => 'Titre',
             'chapo' => 'Chapô',
             'added' => 'Date ajout',

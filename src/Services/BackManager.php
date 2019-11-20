@@ -3,37 +3,10 @@
 namespace OCR5\Services;
 
 use OCR5\Entities\Comment;
+use OCR5\Handler\PostHandler;
 
 class BackManager extends Manager
 {
-    public function getRequests($entity)
-    {
-        return $this->select('*', $entity, 'status = 0', null, [], true);
-    }
-
-    public function getValids($entity, $limit = null, $offset = null, $condition = null)
-    {
-        $andWhere = $entity === 'user' ? ' AND role = "contributor" ' : null;
-        $andWhere .= ($condition !== null) ? ' AND ' . $condition : null;
-
-        $limit = ((null !== $limit) && (null !== $offset)) ? ' LIMIT '.$limit.' OFFSET '.$offset : null;
-
-        return $this->queryDatabase('SELECT * FROM '.$entity.' WHERE status = 1 ' . $andWhere . ' ORDER BY id DESC ' . $limit, [], 'OCR5\Entities\\'. ucfirst($entity), true);
-    }
-
-    public function getValid($entity, $id)
-    {
-        $innerJoin = ($entity === 'post') ? ' INNER JOIN user u ON p.user_id = u.id' : null;
-        $table = ' ' . substr($entity, 0, 1);
-
-//        return $this->select('*', $entity,'status = 1 AND id = :id ', null, [
-//            ':id' => $id
-//        ]);
-        return $this->queryDatabase('SELECT * FROM '.$entity.$table.$innerJoin.' WHERE '.$table.'.status = 1 AND '.$table.'.id = :id ', [
-            ':id' => $id
-        ], 'OCR5\Entities\\'. ucfirst($entity));
-    }
-
     public function getPagination($entity, $limit, $condition = null)
     {
         if (false === $this->entityExists($entity)) {
@@ -44,21 +17,16 @@ class BackManager extends Manager
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($page - 1) * $limit;
 
-//        ;
+        $repository = $this->getHandler($entity);
 
-        $pagination[$entity . 's'] = $this->getRepository($entity)->getValids((int)$limit, $offset, $condition);
-        $pagination['nb'] = $this->queryDatabase('SELECT COUNT(*) as count FROM ' . $entity . ' WHERE status = 1')['count'];
+        $pagination[$entity . 's'] = $repository->getValids((int)$limit, $offset, $condition);
+        $pagination['nb'] = $repository->countValids();
         $pagination['pages']['max'] = $pagination['nb'] / $limit;
         $pagination['pages']['actual'] = $page;
         $pagination['pages']['before'] = $page - 1;
         $pagination['pages']['after'] = $page + 1;
 
         return $pagination;
-    }
-
-    public function getPaginatedCommentsByPost($limit, $id)
-    {
-        return $this->getPagination('comment', $limit, 'post_id = '. (int)$id);
     }
 
     public function createTable($entity, $valid = false, $id = null)
@@ -69,19 +37,23 @@ class BackManager extends Manager
         }
 
         $fqcn = $this->getEntityFQCN($entity);
+        $repository = $this->getHandler($entity);
+
         if ($entity === 'post' && $id !== null) {
-            $entities = $this->getPostsByUser($id);
+            $postRepository = new PostHandler();
+            $entities = $postRepository->getByUser($id);
+            $fields = $fqcn::getPrivateFields();
             $form['postsByUser'] = true;
         } else {
-            $entities = $valid === true ? $this->getValids($entity) : $this->getRequests($entity);
+            $fields = $fqcn::getPublicFields();
+            $entities = $valid === true ? $repository->getValids() : $repository->getRequests();
         }
 
+//        var_dump($entities);
 
         $form['traductedEntity'] = $fqcn::getRequestedTraduction();
         $form['entity'] = $entity;
         $form['type'] = $valid === true ? 'valids' : 'requests';
-
-        $fields = $fqcn::getPublicFields();
 
         foreach ($fields as $attribute => $label) {
             $form['labels'][] = $label;
@@ -104,30 +76,5 @@ class BackManager extends Manager
         }
 
         return $form;
-    }
-
-    public function handleEntity($entity, $id, $status)
-    {
-        $entity = $this->getEntityFQCN($entity);
-        if (false === in_array($status, [1,2,3])) {
-            return null;
-        }
-        return $this->queryDatabase('UPDATE '.$entity. ' SET status = '.$status.' WHERE id = :id', [
-            ':id' => $id
-        ]);
-    }
-
-    public function getPostsByUser($id)
-    {
-        return $this->queryDatabase('SELECT * FROM post WHERE status = 1 AND user_id = :id ORDER BY id DESC', [
-            ':id' => $id
-        ], 'OCR5\Entities\Post', true);
-    }
-
-    public function getPost($id)
-    {
-        return $this->select('*', 'post', 'id = :id', null, [
-            ':id' => $id
-        ], 'post');
     }
 }
