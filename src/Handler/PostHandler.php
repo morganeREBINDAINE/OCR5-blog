@@ -42,17 +42,17 @@ class PostHandler extends Handler
         return $this->select('p.*, u.username', $this->table, 'p.status = 1 ' . $andWhere, $limit, [], true);
     }
 
-    public function getValid($id)
+    public function getValid($identifier)
     {
-        return $this->select('p.*, u.username', $this->table, 'p.status = 1 AND p.id = :id ', null, [':id' => $id]);
+        return $this->select('p.*, u.username', $this->table, 'p.status = 1 AND p.id = :id ', null, [':id' => $identifier]);
     }
 
-    public function getByUser($id)
+    public function getByUser($identifier)
     {
-        return $this->select('p.*, u.username', $this->table, 'p.status = 1 AND p.user_id = :id', null, [':id' => $id], true);
+        return $this->select('p.*, u.username', $this->table, 'p.status = 1 AND p.user_id = :id', null, [':id' => $identifier], true);
     }
 
-    public function change($id, $formData, $image)
+    public function change($identifier, $formData, $image)
     {
         return $this->update(
             $this->getEntity(),
@@ -64,7 +64,7 @@ class PostHandler extends Handler
                 ':chapo' => $formData['chapo'],
                 ':image' => $image['name'],
                 ':extension' => $image['extension'],
-                ':id' => $id,
+                ':id' => $identifier,
             ]
         );
     }

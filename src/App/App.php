@@ -5,6 +5,7 @@ namespace OCR5\App;
 use AltoRouter;
 use OCR5\Services\AuthenticationManager;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 use Twig\TwigTest;
@@ -16,7 +17,7 @@ class App
     /**
      * @return Environment
      */
-    public static function getTwig(): Environment
+    public function getTwig(): Environment
     {
         if (empty(self::$twig)) {
             $loader = new FilesystemLoader('../templates');
@@ -24,7 +25,7 @@ class App
                 'debug' =>true
 //                'cache' => '../cache'
             ]);
-            $twig->addExtension(new \Twig\Extension\DebugExtension());
+            $twig->addExtension(new DebugExtension());
             $twig->addTest(new TwigTest('tokenValid', function () {
                 return (new AuthenticationManager())->compareTokens();
             }));
@@ -46,10 +47,9 @@ class App
         return self::$twig;
     }
 
-    public static function error404()
+    public function error404()
     {
-        header("HTTP/1.0 404 Not Found");
-        echo(self::getTwig())->render('errors/404.html.twig');
+        echo($this->getTwig())->render('errors/404.html.twig');
     }
 
     public function init()
@@ -69,7 +69,7 @@ class App
         $router->map('GET', '/profil', 'OCR5\Controllers\AdminController::profile');
         $router->map('GET', '/gestion-[a:frenchEntity]', 'OCR5\Controllers\AdminController::handleEntities');
         $router->map('GET|POST', '/rediger-article', 'OCR5\Controllers\AdminController::writePost');
-        $router->map('GET|POST', '/modifier-article-[i:id]', 'OCR5\Controllers\AdminController::writePost');
+        $router->map('GET|POST', '/modifier-article-[i:identifier]', 'OCR5\Controllers\AdminController::writePost');
         $router->map('POST', '/action-entities', 'OCR5\Controllers\AdminController::actionEntities');
         $router->map('GET', '/mes-articles', 'OCR5\Controllers\AdminController::myArticles');
 
@@ -79,15 +79,18 @@ class App
             list($controller, $method) = explode('::', $match['target']);
             call_user_func_array([new $controller(), $method], $match['params']);
         } else {
-            self::error404();
+            $this->error404();
         }
     }
 
     public static function isPostMethod()
     {
-        return $_SERVER['METHOD_REQUEST'] === 'POST';
+//        var_dump(self::getServer('METHOD_REQUEST'));
+        return self::getServer('REQUEST_METHOD') === 'POST';
     }
-    public function getServer($key = null) {
+
+    public static function getServer($key = null) {
+//        var_dump($key, isset($_SERVER[$key]), $_SERVER);
         return (isset($_SERVER[$key]) ? $_SERVER[$key] : null);
     }
 }

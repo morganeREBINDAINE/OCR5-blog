@@ -9,7 +9,7 @@ class Post
 
     public static function start()
     {
-        self::$post = &$_POST;
+        self::$post  = &$_POST;
         self::$files = &$_FILES;
     }
 
@@ -25,5 +25,15 @@ class Post
     public static function getFile($fileName)
     {
         return (isset(self::$files[$fileName]) ? self::$files[$fileName] : null);
+    }
+
+    public static function isset(array $keys)
+    {
+        foreach ($keys as $key) {
+            if (null === self::get($key)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

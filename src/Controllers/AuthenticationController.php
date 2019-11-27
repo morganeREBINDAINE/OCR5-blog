@@ -7,7 +7,6 @@ use OCR5\App\Post;
 use OCR5\App\Session;
 use OCR5\Handler\UserHandler;
 use OCR5\Services\AuthenticationManager;
-use OCR5\Services\EntityManager;
 use OCR5\Services\FormManager;
 
 class AuthenticationController extends Controller
@@ -21,12 +20,11 @@ class AuthenticationController extends Controller
         $error = null;
 
         if (App::isPostMethod()
-            && null !== ($username= Post::get('username'))
-            && null !== ($password= Post::get('password'))
+            && Post::isset(['username', 'password'])
         ) {
-            $authenticationManager = new AuthenticationManager();
-            if ($user = $authenticationManager->checkLogin($username, $password)) {
-                $authenticationManager->startSession($user);
+            $manager = new AuthenticationManager();
+            if ($user = $manager->checkLogin(Post::get('username'), Post::get('password'))) {
+                $manager->startSession($user);
 
                 return $this->redirect('/profil');
             }
@@ -51,10 +49,7 @@ class AuthenticationController extends Controller
         $message = null;
 
         if (App::isPostMethod()
-            && null !== Post::get('username')
-            && null !== Post::get('password')
-            && null !== Post::get('passwordConfirm')
-            && null !== Post::get('email')
+            && Post::isset(['username', 'password', 'passwordConfirm', 'email'])
             && false === (new FormManager())->checkRegistrationFormErrors(Post::get())
         ) {
             (new UserHandler())->create(Post::get()) ?

@@ -152,9 +152,9 @@ class FormManager extends Manager
         return $image;
     }
 
-    public function checkCommentFormErrors($formData, $id)
+    public function checkCommentFormErrors($formData, $identifier)
     {
-        if ($formData['id'] !== $id) {
+        if ($formData['id'] !== $identifier) {
             $this->addFlash('error', 'Merci de ne pas toucher au DOM !');
             return true;
         }

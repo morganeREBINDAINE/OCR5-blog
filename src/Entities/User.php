@@ -142,6 +142,7 @@ class User implements EntityInterface
 
     /**
      * @return mixed
+     * @throws \Exception
      */
     public function getAdded()
     {

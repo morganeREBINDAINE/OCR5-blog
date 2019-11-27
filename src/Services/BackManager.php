@@ -48,11 +48,11 @@ class BackManager extends Manager
      *
      * @param      $entity
      * @param bool $valid
-     * @param null $id
+     * @param null $identifier
      *
      * @return array|null
      */
-    public function createTable($entity, $valid = false, $id = null)
+    public function createTable($entity, $valid = false, $identifier = null)
     {
         if (false === $this->entityExists($entity)) {
             $this->addFlash('errorClass', 'Le formulaire ne peut être créé: vérifier que la classe existe et qu\'elle implémente bien EntityInterface.');
@@ -62,9 +62,9 @@ class BackManager extends Manager
         $fqcn = $this->getEntityFQCN($entity);
         $handler = $this->getHandler($entity);
 
-        if ($entity === 'post' && $id !== null) {
+        if ($entity === 'post' && $identifier !== null) {
             $postHandler = new PostHandler();
-            $entities = $postHandler->getByUser($id);
+            $entities = $postHandler->getByUser($identifier);
             $fields = $fqcn::getPrivateFields();
             $form['postsByUser'] = true;
         } else {

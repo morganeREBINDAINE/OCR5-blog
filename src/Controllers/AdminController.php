@@ -34,8 +34,9 @@ class AdminController extends Controller
 
     public function handleEntities($entity)
     {
+        $app = new App();
         if (false === $this->isAdmin()) {
-            return App::error404();
+            return $app->error404();
         }
 
         switch ($entity) {
@@ -52,7 +53,7 @@ class AdminController extends Controller
                 $entity = 'post';
                 break;
             default:
-                return App::error404();
+                return $app->error404();
         }
 
         $table = (new BackManager())->createTable($entity, true);
@@ -67,28 +68,29 @@ class AdminController extends Controller
     {
         if (Post::get('token') && Post::get('action')) {
             $token = Post::get('token');
-            list($entity, $id, $hash) = explode('-', $token);
+            list($entity, $identifier, $hash) = explode('-', $token);
 
-            if (password_verify($id= (int)base64_decode($id), $hash)) {
+            if (password_verify($identifier= (int)base64_decode($identifier), $hash)) {
                 $handler = 'OCR5\Handler\\'.ucfirst($entity).'Handler';
                 $handler = new $handler();
 
                 switch (Post::get('action')) {
                     case 'accepter':
-                        $handler->changeStatus($id, 1);
+                        $handler->changeStatus($identifier, 1);
                         $this->redirect(Session::get('last_page'));
+                        break;
                     case 'modifier':
-                        $this->redirect('/modifier-article-'.$id);
+                        $this->redirect('/modifier-article-'.$identifier);
                         break;
                     case 'refuser':
-                        $handler->changeStatus($id, 2);
+                        $handler->changeStatus($identifier, 2);
                         break;
                     case 'supprimer':
-                        $handler->changeStatus($id, 3);
+                        $handler->changeStatus($identifier, 3);
 
                         break;
                     default:
-                        App::error404();
+                        (new App())->error404();
                 }
                 $this->redirect(Session::get('last_page'));
             }
@@ -97,19 +99,17 @@ class AdminController extends Controller
         }
     }
 
-    public function writePost($id = null)
+    public function writePost($identifier = null)
     {
         $postHandler = new PostHandler();
-        $post = $postHandler->get($id) ?: null;
+        $post = $postHandler->get($identifier) ?: null;
 
-        if (($id) && ($post === false || ($this->isAdmin() === false && $post->getUser() !== Session::get('user')->getId()))) {
+        if (($identifier) && ($post === false || ($this->isAdmin() === false && $post->getUser() !== Session::get('user')->getId()))) {
             return $this->error('Cet article n\'existe pas ou bien vous n\'avez pas de droits dessus.');
         }
 
         if (App::isPostMethod()
-            && null !== Post::get('title')
-            && null !== Post::get('content')
-            && null !== Post::get('chapo')
+            && Post::isset(['title', 'content', 'chapo'])
             && null !== Post::getFile('image')
         ) {
             $em = new FormManager();
@@ -118,22 +118,22 @@ class AdminController extends Controller
             $image = $em->createImage(Post::getFile('image'), $post);
 
             if (false === $em->checkPostFormErrors($formData, $image)) {
-                if ($id) {
-                    $postHandler->change($id, $formData, $image);
+                if ($identifier) {
+                    $postHandler->change($identifier, $formData, $image);
                     $this->addFlash('success', 'Votre article a été modifié.');
                     header("Refresh:0");
                     exit();
                 }
 
                 $formData['img'] = $image;
-                $postHandler->create($formData, $image);
+                $postHandler->create($formData);
                 $this->addFlash('success', 'Votre article a été ajouté et doit être validé par l\'administratrice avant d\'être publié.');
                 $this->redirect('/profil');
             }
         }
 
         return $this->render('back/post-form', [
-            'post' => null !== $id ? $post : $formData
+            'post' => null !== $identifier ? $post : $formData
         ]);
     }
 

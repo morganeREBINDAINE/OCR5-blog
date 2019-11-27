@@ -31,10 +31,10 @@ abstract class Handler
         return $this->select('*', $this->table . $join, $this->letter. '.status = 1 ' . $andWhere, $limit, [], true);
     }
 
-    public function getValid($id)
+    public function getValid($identifier)
     {
         return $this->select('*', $this->table, 'status = 1 AND id = :id ', null, [
-            ':id' => $id
+            ':id' => $identifier
         ]);
     }
 
@@ -48,14 +48,14 @@ abstract class Handler
         return $this->queryDatabase('SELECT COUNT(*) as count FROM ' . $this->table . ' WHERE '.$this->letter.'.status = 1')['count'];
     }
 
-    public function get($id)
+    public function get($identifier)
     {
         return $this->select('*', $this->table, $this->letter.'.id = :id', null, [
-            ':id' => $id
+            ':id' => $identifier
         ]);
     }
 
-    public function changeStatus($id, $status)
+    public function changeStatus($identifier, $status)
     {
         if (false === in_array($status, [1,2,3])) {
             return null;
@@ -63,7 +63,7 @@ abstract class Handler
 
         return $this->update($this->table, $this->letter.'.status = :status', $this->letter.'.id = :id', [
             ':status' => $status,
-            ':id' => $id
+            ':id' => $identifier
         ]);
     }
 }

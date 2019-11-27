@@ -24,11 +24,11 @@ class Comment implements EntityInterface
     }
 
     /**
-     * @param int $id
+     * @param int $identifier
      */
-    public function setId($id)
+    public function setId($identifier)
     {
-        $this->id = $id;
+        $this->id = $identifier;
     }
 
     /**
@@ -112,7 +112,7 @@ class Comment implements EntityInterface
     }
 
     /**
-     * @return DateTime
+     * @return mixed
      * @throws \Exception
      */
     public function getAdded()

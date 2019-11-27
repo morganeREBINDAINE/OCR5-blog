@@ -18,14 +18,15 @@ abstract class Controller
     protected function render($template, $vars = [])
     {
         $template = $template . '.html.twig';
+        $app = new App();
         try {
-            echo(App::getTwig())->render($template, $vars);
+            echo($app->getTwig())->render($template, $vars);
         } catch (LoaderError $e) {
-            echo(App::getTwig())->render('errors/error.html.twig', [
+            echo($app->getTwig())->render('errors/error.html.twig', [
                 'message' => "Attention, développeuse ! Il y a un problème : le template que tu tentes de définir: \"" . $template . "\" n'existe pas !"
             ]);
         } catch (Error $e) {
-            echo(App::getTwig())->render('errors/error.html.twig', [
+            echo($app->getTwig())->render('errors/error.html.twig', [
                 'message' => $e->getMessage()
             ]);
         }
