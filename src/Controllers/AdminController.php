@@ -134,6 +134,7 @@ class AdminController extends Controller
 
         return $this->render('back/post-form', [
             'post' => null !== $id ? $post : $formData
+
         ]);
     }
 

@@ -136,6 +136,7 @@ class FormManager extends Manager
     public function createImage($file, $post)
     {
         if (Post::get('keep-image') && Post::get('keep-image') === 'on' && $post) {
+
             $image['extension'] = $post->getExtension();
             $image['name'] = $post->getImage();
             $image['status'] = 'keep';

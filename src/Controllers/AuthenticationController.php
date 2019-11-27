@@ -58,6 +58,7 @@ class AuthenticationController extends Controller
             && false === (new FormManager())->checkRegistrationFormErrors(Post::get())
         ) {
             (new UserHandler())->create(Post::get()) ?
+
                     $this->addFlash('success', 'Votre candidature a été soumise.')
                     : $this->addFlash('error', 'Il y a eu un soucis durant la soumission de la candidature...');
         }

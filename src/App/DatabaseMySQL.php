@@ -10,7 +10,6 @@ class DatabaseMySQL
     private $username = 'root';
     private $password = '';
     private $databaseName = 'ocr5';
-
     public $pdo;
 
     public function __construct()

@@ -89,5 +89,6 @@ class App
     }
     public function getServer($key = null) {
         return (isset($_SERVER[$key]) ? $_SERVER[$key] : null);
+
     }
 }

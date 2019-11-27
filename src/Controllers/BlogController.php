@@ -49,6 +49,7 @@ class BlogController extends Controller
         ) {
             if (false === $formManager->checkCommentFormErrors(Post::get(), $id)) {
                 (new CommentHandler())->create(Post::get()) ?
+
                     $this->addFlash('success', 'Votre commentaire a été ajouté: il doit être validé avant d\'être publié.')
                     : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
             }
