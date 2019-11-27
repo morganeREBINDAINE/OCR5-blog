@@ -15,7 +15,7 @@
             <p>{{ session.flashbag.error }}</p>
         </div>
     {% endif %}
-    <form class="mb-5" action="/inscription" method="post">
+    <form class="mb-5 authentication" action="/inscription" method="post">
         <div class="form-group">
             <label for="username">Choisissez un pseudo:</label>
             <input class="form-control" type="text" name="username" value="{{ post.username }}">

@@ -19,8 +19,8 @@ class DatabaseMySQL
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-        $pdo->exec("CREATE DATABASE IF NOT EXISTS ocr5");
-        $pdo->exec("use ocr5");
+        $pdo->exec("CREATE DATABASE IF NOT EXISTS " . $this->databaseName);
+        $pdo->exec("use " . $this->databaseName);
 
         $pdo->exec("CREATE TABLE IF NOT EXISTS user (
              id INT( 11 ) AUTO_INCREMENT PRIMARY KEY,

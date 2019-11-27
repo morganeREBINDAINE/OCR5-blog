@@ -20,9 +20,7 @@ class UserHandler extends Handler
 
     public function getValids($limit = null, $offset = null, $condition = null, $join = null)
     {
-        $condition = $condition ? ' AND '.$condition : null;
-
-        return parent::getValids('role = "contributor"'.$condition, $join, $limit, $offset);
+        return parent::getValids($limit, $offset, 'role = "contributor"', $join);
     }
 
     public function getValid($username)
@@ -37,6 +35,14 @@ class UserHandler extends Handler
         return $this->update($this->table, 'token = :token', 'username = :username', [
             ':token' => $token,
             ':username' => $username,
+        ]);
+    }
+
+    public function findStatusContributor($username, $email)
+    {
+        return $this->select('status', $this->table, 'username = :username OR email = :email', null, [
+            ':username' => $username,
+            ':email' => $email
         ]);
     }
 }

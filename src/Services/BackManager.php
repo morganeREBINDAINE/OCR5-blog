@@ -7,6 +7,15 @@ use OCR5\Handler\PostHandler;
 
 class BackManager extends Manager
 {
+    /**
+     * Create pagination system for the entity specified
+     *
+     * @param $entity
+     * @param $limit
+     * @param $condition
+     *
+     * @return array|null
+     */
     public function getPagination($entity, $limit, $condition = null)
     {
         if (false === $this->entityExists($entity)) {
@@ -14,21 +23,35 @@ class BackManager extends Manager
 
             return null;
         }
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $offset = ($page - 1) * $limit;
 
         $repository = $this->getHandler($entity);
 
-        $pagination[$entity . 's'] = $repository->getValids((int)$limit, $offset, $condition);
         $pagination['nb'] = $repository->countValids();
-        $pagination['pages']['max'] = $pagination['nb'] / $limit;
+        $pagination['pages']['max'] = round($pagination['nb'] / $limit);
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+        $page = $page > $pagination['pages']['max'] ? $pagination['pages']['max'] : $page;
+
+        $offset = $page > 0 ? ($page - 1) * $limit : 0;
+
         $pagination['pages']['actual'] = $page;
         $pagination['pages']['before'] = $page - 1;
         $pagination['pages']['after'] = $page + 1;
+        $pagination[$entity . 's'] = $repository->getValids((int)$limit, $offset, $condition);
 
         return $pagination;
     }
 
+    /**
+     * Create a table for the entity specified (fields are written in the entity class)
+     *
+     * @param      $entity
+     * @param bool $valid
+     * @param null $id
+     *
+     * @return array|null
+     */
     public function createTable($entity, $valid = false, $id = null)
     {
         if (false === $this->entityExists($entity)) {
@@ -37,19 +60,17 @@ class BackManager extends Manager
         }
 
         $fqcn = $this->getEntityFQCN($entity);
-        $repository = $this->getHandler($entity);
+        $handler = $this->getHandler($entity);
 
         if ($entity === 'post' && $id !== null) {
-            $postRepository = new PostHandler();
-            $entities = $postRepository->getByUser($id);
+            $postHandler = new PostHandler();
+            $entities = $postHandler->getByUser($id);
             $fields = $fqcn::getPrivateFields();
             $form['postsByUser'] = true;
         } else {
             $fields = $fqcn::getPublicFields();
-            $entities = $valid === true ? $repository->getValids() : $repository->getRequests();
+            $entities = $valid === true ? $handler->getValids() : $handler->getRequests();
         }
-
-//        var_dump($entities);
 
         $form['traductedEntity'] = $fqcn::getRequestedTraduction();
         $form['entity'] = $entity;

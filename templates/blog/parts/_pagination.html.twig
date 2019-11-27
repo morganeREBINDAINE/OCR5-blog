@@ -1,12 +1,12 @@
-<div class="row">
+<div class="row mt-5">
     <div class="col-6">
         {% if page.before > 0 %}
-            <a class="btn btn-success" href="?page={{ page.before }}">Précédent</a>
+            <a class="btn btn-warning" href="?page={{ page.before }}">Précédent</a>
         {% endif %}
     </div>
     <div class="col-6 text-right">
         {% if page.actual < page.max %}
-            <a class="btn btn-success" href="?page={{ page.after }}">Suivant</a>
+            <a class="btn btn-warning" href="?page={{ page.after }}">Suivant</a>
         {% endif %}
     </div>
 </div>

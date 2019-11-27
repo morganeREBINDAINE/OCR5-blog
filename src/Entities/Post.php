@@ -8,7 +8,7 @@ use OCR5\Interfaces\EntityInterface;
 class Post implements EntityInterface
 {
     const STATUS_REQUEST = 0;
-    const STATUS_ONLINE  = 1;
+    const STATUS_VALIDATED  = 1;
     const STATUS_REFUSED = 2;
     const STATUS_DELETED = 3;
 

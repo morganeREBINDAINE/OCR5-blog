@@ -6,7 +6,7 @@ use OCR5\Database\DatabaseMySQL;
 
 trait DatabaseTrait
 {
-    private $db;
+    protected $db;
 
     public function queryDatabase($query, $parameters = [], $className = null, $multiple = false)
     {
@@ -17,10 +17,7 @@ trait DatabaseTrait
     public function select($target, $table, $where = null, $limit = null, $params = [], $multiple = false)
     {
         $where = $where ? ' WHERE ' . $where :null;
-
-        $order = $multiple ? ' ORDER BY '.substr($table,0,1).'.id DESC ' : null;
-
-//        var_dump('SELECT '.$target.' FROM '.$table.$where.$order. $limit);die;
+        $order = $multiple ? ' ORDER BY '.substr($table, 0, 1).'.id DESC ' : null;
 
         return $this->queryDatabase('SELECT '.$target.' FROM '.$table.$where.$order. $limit, $params, '\OCR5\Entities\\'.ucfirst(explode(' ', $table)[0]), $multiple);
     }

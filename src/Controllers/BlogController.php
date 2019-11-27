@@ -17,9 +17,8 @@ class BlogController extends Controller
 
     public function postsList()
     {
-        $backManager = new BackManager();
-        $pagination = $backManager->getPagination('post', 2);
-        
+        $pagination = (new BackManager())->getPagination('post', 2);
+
         return $this->render('blog/posts-list', [
             'posts' => $pagination['posts'],
             'page' => $pagination['pages'],
@@ -33,9 +32,9 @@ class BlogController extends Controller
         $postHandler = new PostHandler();
 
         $post = $postHandler->getValid($id);
-//        var_dump($post);
 
         $pagination = $backManager->getPagination('comment', 4, 'post_id = '. (int)$id);
+//        var_dump($pagination);
 
         if (empty($post)) {
             return $this->error('Aucun article ne correspond à cet article.');

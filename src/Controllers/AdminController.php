@@ -27,9 +27,7 @@ class AdminController extends Controller
         $backManager = new BackManager();
         $contributorsRequests = $this->isAdmin() ? $backManager->createTable('user') : null;
         $postsRequests = $this->isAdmin() ? $backManager->createTable('post') : null;
-
         $commentsRequests = $backManager->createTable('comment');
-//        var_dump($commentsRequests);die;
 
         return $this->render('back/profile', [
             'contributorsRequests' => $contributorsRequests,
@@ -43,6 +41,7 @@ class AdminController extends Controller
         if (false === $this->isAdmin()) {
             return App::error404();
         }
+
         switch ($entity) {
             case 'commentaires':
                 $title = 'Liste des commentaires en ligne';
@@ -75,21 +74,21 @@ class AdminController extends Controller
             list($entity, $id, $hash) = explode('-', $token);
 
             if (password_verify($id= (int)base64_decode($id), $hash)) {
-                $repository = 'OCR5\Repository\\'.ucfirst($entity).'Repository';
-                $repository = new $repository();
+                $handler = 'OCR5\Handler\\'.ucfirst($entity).'Handler';
+                $handler = new $handler();
 
                 switch ($_POST['action']) {
                     case 'accepter':
-                        $repository->changeStatus($id, 1);
+                        $handler->changeStatus($id, 1);
                         $this->redirect($_SESSION['last_page']);
                     case 'modifier':
                         $this->redirect('/modifier-article-'.$id);
-                    break;
+                        break;
                     case 'refuser':
-                        $repository->changeStatus($id, 2);
+                        $handler->changeStatus($id, 2);
                         break;
                     case 'supprimer':
-                        $repository->changeStatus($id, 3);
+                        $handler->changeStatus($id, 3);
 
                         break;
                     default:
@@ -105,24 +104,16 @@ class AdminController extends Controller
     public function writePost($id = null)
     {
         $repository = new PostHandler();
-        if ($id) {
-            $post = $repository->get($id);
+        $post = $repository->get($id) ?: null;
 
-            if ($post === false || ($this->isAdmin() === false && $post->getUser() !== $_SESSION['user']->getId())) {
-                return $this->error('Cet article n\'existe pas ou bien vous n\'avez pas de droits dessus.');
-            }
+        if (($id) && ($post === false || ($this->isAdmin() === false && $post->getUser() !== $_SESSION['user']->getId()))) {
+            return $this->error('Cet article n\'existe pas ou bien vous n\'avez pas de droits dessus.');
         }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'], $_POST['content'], $_POST['chapo'], $_FILES['image'])) {
             $em = new FormManager();
 
-            // @todo changer
-            if (isset($_POST['keep-image']) && $_POST['keep-image'] === 'on') {
-                $image['extension'] = $post->getExtension();
-                $image['name'] = $post->getImage();
-                $image['status'] = 'keep';
-            } else {
-                $image = $em->createImage($_FILES['image']);
-            }
+            $image = $em->createImage($_FILES['image'], $post);
 
             if (false === $em->checkPostFormErrors($_POST, $image)) {
                 if ($id) {

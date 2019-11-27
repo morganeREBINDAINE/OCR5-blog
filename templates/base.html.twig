@@ -6,16 +6,12 @@
     <title>{% block title %}Rebindaine Morgane - Projet 5 OCR{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/journal/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Abel|Parisienne&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ css('all') }}">
 </head>
 <body class="{% block bodyClass %}{% endblock %}">
 <header>
     <div class="fixed-top">
-{#            {% if session.token is defined and session.username is defined %}#}
-{#                <div class="connected-bar">#}
-{#                    Bonjour {{ session.role }} "{{ session.username }}" !#}
-{#                </div>#}
-{#            {% endif %}#}
         <nav class="navbar navbar-expand-md navbar-light bg-primary px-5 flex-column">
             <div class="container">
                 <div class="navbar-brand-container">
@@ -66,10 +62,17 @@
     </div>
 </header>
 {% block body %}{% endblock %}
-<footer class="bg-secondary py-4">
+<footer class="bg-primary py-4">
     <div class="container">
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, animi asperiores corporis, cum deserunt dolores facere fugit impedit ipsam laboriosam nesciunt, obcaecati odio officia quam
             reprehenderit repudiandae totam unde. Culpa.</p>
+        <div class="col-12 text-center mt-5">
+            {% if session.user.token is not defined %}
+                    <a class="btn btn-dark nav-link d-inline" href="/connexion">
+                        Connexion
+                    </a>
+            {% endif %}
+        </div>
     </div>
 </footer>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

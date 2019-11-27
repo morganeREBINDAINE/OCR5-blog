@@ -112,7 +112,8 @@ class Comment implements EntityInterface
     }
 
     /**
-     * @return mixed
+     * @return DateTime
+     * @throws \Exception
      */
     public function getAdded()
     {
@@ -120,7 +121,7 @@ class Comment implements EntityInterface
     }
 
     /**
-     * @param mixed $added
+     * @param $added
      */
     public function setAdded($added)
     {

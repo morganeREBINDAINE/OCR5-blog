@@ -35,12 +35,12 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="content">Contenu</label>
+                    <label for="content">Message</label>
                     <textarea class="form-control" name="content"></textarea>
                 </div>
                 <div class="form-group text-right">
                     <input type="hidden" class="form-control" name="id" value="{{ post.id }}">
-                    <button type="submit" class="btn btn-success">Envoyer</button>
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
                 </div>
             </form>
             {% if comments is not empty %}

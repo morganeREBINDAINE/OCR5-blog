@@ -17,6 +17,9 @@ class User implements EntityInterface
     private $status;
     private $added;
 
+    const STATUS_REQUEST = 0;
+    const STATUS_VALIDATED = 1;
+
     /**
      * @return mixed
      */

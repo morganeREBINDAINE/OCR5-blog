@@ -3,7 +3,6 @@
 namespace OCR5\Services;
 
 use OCR5\Entities\User;
-use OCR5\Handler\UserHandler;
 
 class AuthenticationManager extends Manager
 {
@@ -14,13 +13,19 @@ class AuthenticationManager extends Manager
         $this->userRepository = $this->getHandler('user');
     }
 
+    /**
+     * Set a token for the session
+     *
+     * @param $user
+     *
+     * @return mixed
+     */
     public function startSession($user)
     {
         $token = md5($user->getUsername() . mt_rand());
         $user->setToken(base64_encode($token));
         $_SESSION['user'] = $user;
         $_SESSION['user']->setHash(password_hash($user->getId() . $user->getRole() . $user->getId(), PASSWORD_DEFAULT));
-//        die(var_dump($user));
 
         return $this->userRepository->saveToken($user->getUsername(), password_hash($token, PASSWORD_BCRYPT));
     }
@@ -32,6 +37,11 @@ class AuthenticationManager extends Manager
         return ($user !== false && password_verify($password, $user->getPassword())) ? $user : null;
     }
 
+    /**
+     * Compare token in session with the session one
+     *
+     * @return bool
+     */
     public function compareTokens()
     {
         if (false === isset($_SESSION['user'])
@@ -50,6 +60,11 @@ class AuthenticationManager extends Manager
         return true;
     }
 
+    /**
+     * Ensure information stocked in client navigator have not been modified
+     *
+     * @return bool
+     */
     public function ensureIdentity()
     {
         $sessionUser = $_SESSION['user'];
