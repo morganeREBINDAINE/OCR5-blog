@@ -2,6 +2,7 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\App\Session;
 use OCR5\Handler\UserHandler;
 use OCR5\Services\AuthenticationManager;
 use OCR5\Services\EntityManager;

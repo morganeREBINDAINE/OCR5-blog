@@ -2,6 +2,8 @@
 
 namespace OCR5\Handler;
 
+use OCR5\App\Session;
+
 class PostHandler extends Handler
 {
     protected function getEntity()
@@ -18,7 +20,7 @@ class PostHandler extends Handler
     public function create($formData)
     {
         return $this->queryDatabase("INSERT INTO post (user_id, title, content, chapo, image, extension, status, added) VALUES (:user_id, :title, :content, :chapo, :image, :extension, 0, NOW())", [
-            ':user_id' => $_SESSION['user']->getId(),
+            ':user_id' => Session::get('user')->getId(),
             ':title' => $formData['title'],
             ':content' => $formData['content'],
             ':chapo' => $formData['chapo'],

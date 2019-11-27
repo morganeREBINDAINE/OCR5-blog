@@ -2,6 +2,7 @@
 
 namespace OCR5\Services;
 
+use OCR5\App\Session;
 use OCR5\Entities\User;
 use OCR5\Handler\UserHandler;
 use Verot\Upload\Upload;
@@ -143,7 +144,7 @@ class FormManager extends Manager
             }
             $image['file'] = $file;
             $image['extension'] = '.' . array_reverse(explode('.', $file['name']))[0];
-            $image['name'] = $_SESSION['user']->getId() . time();
+            $image['name'] = Session::get('user')->getId() . time();
             $image['status'] = 'new';
         }
 
