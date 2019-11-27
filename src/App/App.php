@@ -37,7 +37,7 @@ class App
             $twig->addFunction(new TwigFunction('hash', function ($value) {
                 return base64_encode($value.'         ').'-'. password_hash((string)$value, PASSWORD_DEFAULT);
             }));
-            $twig->addGlobal('session', $_SESSION);
+            $twig->addGlobal('session', Session::get());
             $twig->addGlobal('post', $_POST);
 
             self::$twig = $twig;
@@ -63,7 +63,7 @@ class App
 
     public static function init()
     {
-        session_start();
+        Session::start();
 
         $router = new AltoRouter();
 

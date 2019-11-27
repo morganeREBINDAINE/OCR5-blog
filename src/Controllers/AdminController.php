@@ -3,6 +3,7 @@
 namespace OCR5\Controllers;
 
 use OCR5\App\App;
+use OCR5\App\Session;
 use OCR5\Entities\Post;
 use OCR5\Handler\PostHandler;
 use OCR5\Services\BackManager;
@@ -80,7 +81,7 @@ class AdminController extends Controller
                 switch ($_POST['action']) {
                     case 'accepter':
                         $handler->changeStatus($id, 1);
-                        $this->redirect($_SESSION['last_page']);
+                        $this->redirect(Session::get('last_page'));
                     case 'modifier':
                         $this->redirect('/modifier-article-'.$id);
                         break;
@@ -94,7 +95,7 @@ class AdminController extends Controller
                     default:
                         App::error404();
                 }
-                $this->redirect($_SESSION['last_page']);
+                $this->redirect(Session::get('last_page'));
             }
 
             return $this->error('Il y a eu un problème lors de la manipulation des données. Veuillez ré-essayer.');
@@ -106,7 +107,7 @@ class AdminController extends Controller
         $repository = new PostHandler();
         $post = $repository->get($id) ?: null;
 
-        if (($id) && ($post === false || ($this->isAdmin() === false && $post->getUser() !== $_SESSION['user']->getId()))) {
+        if (($id) && ($post === false || ($this->isAdmin() === false && $post->getUser() !== Session::get('user')->getId()))) {
             return $this->error('Cet article n\'existe pas ou bien vous n\'avez pas de droits dessus.');
         }
 
@@ -137,7 +138,7 @@ class AdminController extends Controller
 
     public function myArticles()
     {
-        $posts = (new BackManager())->createTable('post', true, $_SESSION['user']->getId());
+        $posts = (new BackManager())->createTable('post', true, Session::get('user')->getId());
 
         return $this->render('back/my-posts', [
             'posts' => $posts,
@@ -147,6 +148,6 @@ class AdminController extends Controller
 
     private function isAdmin()
     {
-        return $_SESSION['user']->getRole() === 'administrator';
+        return Session::get('user')->getRole() === 'administrator';
     }
 }

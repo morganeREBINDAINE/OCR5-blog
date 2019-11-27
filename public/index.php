@@ -1,10 +1,11 @@
 <?php
 
 use OCR5\App\App;
+use OCR5\App\Session;
 
 require('../vendor/autoload.php');
 
 App::init();
 
-unset($_SESSION['flashbag']);
-$_SESSION['last_page'] = $_SERVER['REQUEST_URI'];
+Session::unset('flashbag');
+Session::set('lastpage', $_SERVER['REQUEST_URI']);

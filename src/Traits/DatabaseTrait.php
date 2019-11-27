@@ -2,7 +2,7 @@
 
 namespace OCR5\Traits;
 
-use OCR5\Database\DatabaseMySQL;
+use OCR5\App\DatabaseMySQL;
 
 trait DatabaseTrait
 {

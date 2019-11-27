@@ -3,6 +3,7 @@
 namespace OCR5\Controllers;
 
 use OCR5\App\App;
+use OCR5\App\Session;
 use OCR5\Services\AuthenticationManager;
 use OCR5\Traits\FlashbagTrait;
 use Twig\Error\LoaderError;
@@ -11,6 +12,8 @@ use Twig\Error\SyntaxError;
 
 abstract class Controller
 {
+    use FlashbagTrait;
+
     protected function render($template, $vars = [])
     {
         $templatePath = $template . '.html.twig';
@@ -31,11 +34,6 @@ abstract class Controller
     {
         $authManager = new AuthenticationManager();
         return $authManager->compareTokens() && $authManager->ensureIdentity();
-    }
-
-    protected function addFlash($subject, $message)
-    {
-        $_SESSION['flashbag'][$subject] = $message;
     }
 
     protected function error($message)

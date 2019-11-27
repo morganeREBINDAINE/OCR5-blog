@@ -2,7 +2,7 @@
 
 namespace OCR5\Handler;
 
-use OCR5\Database\DatabaseMySQL;
+use OCR5\App\DatabaseMySQL;
 use OCR5\Traits\DatabaseTrait;
 
 abstract class Handler

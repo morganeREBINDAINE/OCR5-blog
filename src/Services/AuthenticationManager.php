@@ -2,6 +2,7 @@
 
 namespace OCR5\Services;
 
+use OCR5\App\Session;
 use OCR5\Entities\User;
 
 class AuthenticationManager extends Manager
@@ -24,8 +25,8 @@ class AuthenticationManager extends Manager
     {
         $token = md5($user->getUsername() . mt_rand());
         $user->setToken(base64_encode($token));
-        $_SESSION['user'] = $user;
-        $_SESSION['user']->setHash(password_hash($user->getId() . $user->getRole() . $user->getId(), PASSWORD_DEFAULT));
+        Session::set('user', $user);
+        Session::get('user')->setHash(password_hash($user->getId() . $user->getRole() . $user->getId(), PASSWORD_DEFAULT));
 
         return $this->userRepository->saveToken($user->getUsername(), password_hash($token, PASSWORD_BCRYPT));
     }
@@ -44,17 +45,17 @@ class AuthenticationManager extends Manager
      */
     public function compareTokens()
     {
-        if (false === isset($_SESSION['user'])
-            || false === $_SESSION['user'] instanceof User
+        $sessionUser = Session::get('user');
+        if (null === $sessionUser
+            || false === $sessionUser instanceof User
         ) {
             return false;
         }
-        $sessionUser = $_SESSION['user'];
         $sessionToken = base64_decode($sessionUser->getToken());
         $dbUser = $this->userRepository->getValid($sessionUser->getUsername());
 
         if (false === password_verify($sessionToken, $dbUser->getToken())) {
-            unset($_SESSION['user']);
+            Session::unset('user');
             return false;
         }
         return true;
@@ -67,7 +68,7 @@ class AuthenticationManager extends Manager
      */
     public function ensureIdentity()
     {
-        $sessionUser = $_SESSION['user'];
+        $sessionUser = Session::get('user');
 
         $user = $this->userRepository->getValid($sessionUser->getUsername());
 

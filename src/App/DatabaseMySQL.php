@@ -1,6 +1,6 @@
 <?php
 
-namespace OCR5\Database;
+namespace OCR5\App;
 
 use PDO;
 
