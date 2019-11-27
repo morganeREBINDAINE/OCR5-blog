@@ -12,7 +12,6 @@ use Twig\TwigTest;
 class App
 {
     private static $twig;
-    private static $database;
 
     /**
      * @return Environment
@@ -22,7 +21,8 @@ class App
         if (empty(self::$twig)) {
             $loader = new FilesystemLoader('../templates');
             $twig   = new Environment($loader, [
-                //            'cache' => '../cache'
+                'debug' =>true
+//                'cache' => '../cache'
             ]);
             $twig->addExtension(new \Twig\Extension\DebugExtension());
             $twig->addTest(new TwigTest('tokenValid', function () {
@@ -38,7 +38,7 @@ class App
                 return base64_encode($value.'         ').'-'. password_hash((string)$value, PASSWORD_DEFAULT);
             }));
             $twig->addGlobal('session', Session::get());
-            $twig->addGlobal('post', $_POST);
+            $twig->addGlobal('post', Post::get());
 
             self::$twig = $twig;
         }
@@ -46,24 +46,16 @@ class App
         return self::$twig;
     }
 
-    public static function getDatabase()
-    {
-        if (empty(self::$database)) {
-            $database = new DatabaseMySQL();
-            self::$database = $database;
-        }
-        return self::$database;
-    }
-
     public static function error404()
     {
         header("HTTP/1.0 404 Not Found");
-        echo(App::getTwig())->render('errors/404.html.twig');
+        echo(self::getTwig())->render('errors/404.html.twig');
     }
 
-    public static function init()
+    public function init()
     {
         Session::start();
+        Post::start();
 
         $router = new AltoRouter();
 
@@ -87,7 +79,15 @@ class App
             list($controller, $method) = explode('::', $match['target']);
             call_user_func_array([new $controller(), $method], $match['params']);
         } else {
-            App::error404();
+            self::error404();
         }
+    }
+
+    public static function isPostMethod()
+    {
+        return $_SERVER['METHOD_REQUEST'] === 'POST';
+    }
+    public function getServer($key = null) {
+        return (isset($_SERVER[$key]) ? $_SERVER[$key] : null);
     }
 }

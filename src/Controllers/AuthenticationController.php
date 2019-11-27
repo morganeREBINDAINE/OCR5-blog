@@ -2,6 +2,8 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\App\App;
+use OCR5\App\Post;
 use OCR5\App\Session;
 use OCR5\Handler\UserHandler;
 use OCR5\Services\AuthenticationManager;
@@ -13,18 +15,20 @@ class AuthenticationController extends Controller
     public function connection()
     {
         if ($this->isConnected()) {
-            header('location: http://blog/');
+            $this->redirect('/');
         }
 
         $error = null;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
+        if (App::isPostMethod()
+            && null !== ($username= Post::get('username'))
+            && null !== ($password= Post::get('password'))
+        ) {
             $authenticationManager = new AuthenticationManager();
-            if ($user = $authenticationManager->checkLogin($_POST['username'], $_POST['password'])) {
+            if ($user = $authenticationManager->checkLogin($username, $password)) {
                 $authenticationManager->startSession($user);
 
-                header('Location: http://blog/profil');
-                exit();
+                return $this->redirect('/profil');
             }
             $this->addFlash('error', 'Erreur: pseudo et/ou mot de passe incorrects, ou compte non validé.');
         }
@@ -34,23 +38,26 @@ class AuthenticationController extends Controller
 
     public function disconnection()
     {
-        session_destroy();
-        header('location: http://blog/');
+        Session::destroy();
+        $this->redirect('/');
     }
 
     public function registration()
     {
         if ($this->isConnected()) {
-            header('location: http://blog/');
+            $this->redirect('/');
         }
 
         $message = null;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['username'], $_POST['password'], $_POST['passwordConfirm'], $_POST['email'])
-            && false === (new FormManager())->checkRegistrationFormErrors($_POST)
+        if (App::isPostMethod()
+            && null !== Post::get('username')
+            && null !== Post::get('password')
+            && null !== Post::get('passwordConfirm')
+            && null !== Post::get('email')
+            && false === (new FormManager())->checkRegistrationFormErrors(Post::get())
         ) {
-            (new UserHandler())->create($_POST) ?
+            (new UserHandler())->create(Post::get()) ?
                     $this->addFlash('success', 'Votre candidature a été soumise.')
                     : $this->addFlash('error', 'Il y a eu un soucis durant la soumission de la candidature...');
         }

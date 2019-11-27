@@ -2,6 +2,7 @@
 
 namespace OCR5\Services;
 
+use OCR5\App\Post;
 use OCR5\App\Session;
 use OCR5\Entities\User;
 use OCR5\Handler\UserHandler;
@@ -134,7 +135,7 @@ class FormManager extends Manager
 
     public function createImage($file, $post)
     {
-        if (isset($_POST['keep-image']) && $_POST['keep-image'] === 'on' && $post) {
+        if (Post::get('keep-image') && Post::get('keep-image') === 'on' && $post) {
             $image['extension'] = $post->getExtension();
             $image['name'] = $post->getImage();
             $image['status'] = 'keep';
@@ -151,9 +152,9 @@ class FormManager extends Manager
         return $image;
     }
 
-    public function checkCommentFormErrors($formData)
+    public function checkCommentFormErrors($formData, $id)
     {
-        if ($formData['id'] !== $formData['original_id']) {
+        if ($formData['id'] !== $id) {
             $this->addFlash('error', 'Merci de ne pas toucher au DOM !');
             return true;
         }

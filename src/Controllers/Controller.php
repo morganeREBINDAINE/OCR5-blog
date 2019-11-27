@@ -6,6 +6,7 @@ use OCR5\App\App;
 use OCR5\App\Session;
 use OCR5\Services\AuthenticationManager;
 use OCR5\Traits\FlashbagTrait;
+use Twig\Error\Error;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -16,17 +17,17 @@ abstract class Controller
 
     protected function render($template, $vars = [])
     {
-        $templatePath = $template . '.html.twig';
+        $template = $template . '.html.twig';
         try {
-            echo(App::getTwig())->render($templatePath, $vars);
+            echo(App::getTwig())->render($template, $vars);
         } catch (LoaderError $e) {
             echo(App::getTwig())->render('errors/error.html.twig', [
-                'message' => "Attention, développeuse ! Il y a un problème : le template que tu tentes de définir: \"" . $templatePath . "\" n'existe pas !"
+                'message' => "Attention, développeuse ! Il y a un problème : le template que tu tentes de définir: \"" . $template . "\" n'existe pas !"
             ]);
-        } catch (RuntimeError $e) {
-            echo $e->getMessage();
-        } catch (SyntaxError $e) {
-            echo $e->getMessage();
+        } catch (Error $e) {
+            echo(App::getTwig())->render('errors/error.html.twig', [
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
@@ -41,5 +42,12 @@ abstract class Controller
         return $this->render('errors/error', [
             'message' => $message
         ]);
+    }
+
+    protected function redirect($path)
+    {
+        header('Location: http://blog' . $path);
+        Session::unset('flashbag');
+        exit();
     }
 }

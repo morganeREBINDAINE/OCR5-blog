@@ -6,6 +6,11 @@ use PDO;
 
 class DatabaseMySQL
 {
+    private $host = 'localhost';
+    private $username = 'root';
+    private $password = '';
+    private $databaseName = 'ocr5';
+
     public $pdo;
 
     public function __construct()
@@ -15,7 +20,7 @@ class DatabaseMySQL
 
     private function initDatabase()
     {
-        $pdo = new PDO('mysql:host=localhost;charset=utf8', 'root', '');
+        $pdo = new PDO('mysql:host='. $this->host .';charset=utf8', $this->username, $this->password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
