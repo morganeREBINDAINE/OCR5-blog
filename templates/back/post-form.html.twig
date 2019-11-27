@@ -1,6 +1,11 @@
 {% extends 'layouts/full-width.html.twig' %}
 {% block content %}
     <h1>Ajouter un article</h1>
+    {% if session.flashbag.success %}
+        <div class="alert alert-success">
+            {{session.flashbag.success}}
+        </div>
+    {% endif %}
     {% if session.flashbag.error %}
         <div class="alert alert-danger">
             {{session.flashbag.error}}
@@ -39,14 +44,14 @@
             </div>
         {% endif %}
         <div class="form-group">
-            <label for="image">Image</label>
+            <label for="image">Image</label><br>
             {% if post.image is not empty %}
-                <img src="{{ img(post.image ~ '-mini' ~ post.extension) }}">
+                <img src="{{ img(post.image ~ '-mini' ~ post.extension) }}"><br>
                 <input type="checkbox" name="keep-image" checked>
                 <label for="keep-image">Je souhaite conserver l'image</label>
             {% endif %}
-
-            <input type="file" class="form-control-file" id="image" name="image">
+            <br><br>
+            <input type="file" class="form-control-file" id="image" name="image"><br>
         </div>
         {% if session.flashbag.errorImage %}
             <div class="alert alert-danger">
@@ -54,7 +59,7 @@
             </div>
         {% endif %}
         <div class="form-group">
-            <button type="submit" class="btn btn-success">Envoyer</button>
+            <button type="submit" class="btn btn-warning">Envoyer</button>
         </div>
     </form>
 {% endblock %}

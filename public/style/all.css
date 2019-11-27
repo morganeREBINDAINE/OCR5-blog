@@ -3,11 +3,11 @@
 }
 .navbar-brand {
   position: absolute;
-  top: -30px;
+  top: -50px;
   left: 0;
 }
 .navbar-brand img {
-  width: 80px;
+  width: 135px;
 }
 .navbar-brand-container {
   position: relative;
@@ -25,10 +25,34 @@
 
 body {
   margin-top: 56px;
+  font-family: "Abel", sans-serif;
+  font-size: 18px;
 }
 
 a:hover {
   text-decoration: none;
+}
+
+.bg-secondary {
+  background-color: #9b4141 !important;
+}
+
+.nav-link {
+  letter-spacing: 1.4px;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px auto 40px;
+}
+
+.btn-dark {
+  background-color: #9b4141;
+  border-color: #9b4141;
+}
+.btn-dark:hover {
+  background-color: #773232;
+  border-color: #773232;
 }
 
 .connected-bar {
@@ -62,19 +86,21 @@ a:hover {
 }
 .home .aside-socialmedia i {
   margin: 0 20px;
-  font-size: 20px;
+  font-size: 30px;
   transition: color 0.7s;
 }
 .home .aside-presentation-photo {
   width: 80px;
   height: 80px;
-  background-image: url("../img/logo.png");
+  background-image: url("../img/avatar.png");
   background-size: contain;
   margin: auto;
 }
 .home .aside-presentation .name {
+  font-family: "Parisienne", cursive;
   display: block;
   text-align: center;
+  font-size: 20px;
 }
 .home .aside-presentation .description {
   text-align: center;
@@ -88,22 +114,34 @@ a:hover {
 }
 
 .post {
-  background: #d2d2d2;
-  border: 2px solid gray;
   border-radius: 10px;
-  padding: 10px;
-  margin: 10px auto;
+  margin: 10px auto 30px;
 }
 .post-image {
   max-width: 450px;
-  height: 250px;
+  height: 100%;
   background-size: cover;
   background-position: center;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  min-height: 290px;
+}
+.post-content {
+  padding: 20px 10px;
+}
+.post-comments {
+  margin-top: 50px;
+  max-width: 650px;
 }
 .post-single-image {
   height: 300px;
   background-size: cover;
   background-position: center;
+}
+
+form.authentication {
+  max-width: 650px;
+  margin: auto;
 }
 
 /*# sourceMappingURL=all.css.map */

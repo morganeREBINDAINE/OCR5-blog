@@ -2,6 +2,8 @@
 
 namespace OCR5\Services;
 
+use OCR5\Entities\User;
+use OCR5\Handler\UserHandler;
 use Verot\Upload\Upload;
 
 class FormManager extends Manager
@@ -92,17 +94,15 @@ class FormManager extends Manager
             }
         }
 
-        if ($result = $this->findStatusContributor($formData['username'], $formData['email'])) {
-            // @todo const
-
+        if ($result = (new UserHandler())->findStatusContributor($formData['username'], $formData['email'])) {
             switch ($result['status']) {
-                case '0':
+                case User::STATUS_VALIDATED:
                     $this->addFlash(
                         'error',
                         'Ce contributeur existe déjà.'
                     );
                     break;
-                case 1:
+                case User::STATUS_REQUEST:
                     $this->addFlash(
                         'error',
                         'Il y déjà une demande d\'inscription pour ce contributeur. Patience ! L\'administratrice va bientôt traiter votre cas.'
@@ -111,7 +111,7 @@ class FormManager extends Manager
             }
             return true;
         }
-        if (strlen($formData['password']) < 5  || empty($formData['password'])) {
+        if (strlen($formData['password']) < 5) {
             $this->addFlash('errorPasswordEmpty', 'Vous devez entrer un mot de passe d\'au moins 5 caractères.');
             $error = true;
         }
@@ -131,23 +131,21 @@ class FormManager extends Manager
         return $error;
     }
 
-    private function findStatusContributor($username, $email)
+    public function createImage($file, $post)
     {
-        return $this->queryDatabase("SELECT status FROM user WHERE username = :username OR email = :email", [
-            ':username' => $username,
-            ':email' => $email
-        ]);
-    }
-
-    public function createImage($file)
-    {
-        if ($file['error'] === 4) {
-            return null;
+        if (isset($_POST['keep-image']) && $_POST['keep-image'] === 'on' && $post) {
+            $image['extension'] = $post->getExtension();
+            $image['name'] = $post->getImage();
+            $image['status'] = 'keep';
+        } else {
+            if ($file['error'] === 4) {
+                return null;
+            }
+            $image['file'] = $file;
+            $image['extension'] = '.' . array_reverse(explode('.', $file['name']))[0];
+            $image['name'] = $_SESSION['user']->getId() . time();
+            $image['status'] = 'new';
         }
-        $image['file'] = $file;
-        $image['extension'] = '.' . array_reverse(explode('.', $file['name']))[0];
-        $image['name'] = $_SESSION['user']->getId() . time();
-        $image['status'] = 'new';
 
         return $image;
     }

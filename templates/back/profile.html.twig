@@ -4,28 +4,28 @@
     {% if session.flashbag.success is defined %}
         <div class="alert alert-success">{{ session.flashbag.success }}</div>
     {% endif %}
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-md-3">
-            <a href="/rediger-article" class="btn btn-success">Rédiger un article</a>
+            <a href="/rediger-article" class="btn btn-warning">Rédiger un article</a>
         </div>
         <div class="col-md-9 text-right">
             {% if session.user.role is same as ('administrator') %}
-                <a href="/gestion-redacteurs" class="btn btn-success">Gérer les rédacteurs</a>
-                <a href="/gestion-articles" class="btn btn-success">Gérer les articles</a>
-                <a href="/gestion-commentaires" class="btn btn-success">Gérer les commentaires</a>
+                <a href="/gestion-redacteurs" class="btn btn-dark">Gérer les rédacteurs</a>
+                <a href="/gestion-articles" class="btn btn-primary">Gérer les articles</a>
+                <a href="/gestion-commentaires" class="btn btn-dark">Gérer les commentaires</a>
             {% endif %}
-            <a href="/mes-articles" class="btn btn-success">Voir mes articles</a>
+            <a href="/mes-articles" class="btn btn-primary">Voir mes articles</a>
         </div>
     </div>
     {% if session.user.role is same as ('administrator') %}
-        <div class="contributors-requests">
+        <div class="contributors-requests mt-5">
             {{ include ('back/parts/table.html.twig', {form: contributorsRequests, title: 'Liste des rédacteurs'}) }}
         </div>
-        <div class="articles-requests">
+        <div class="articles-requests mt-5">
             {{ include ('back/parts/table.html.twig', {form: postsRequests, title: 'Liste des articles'}) }}
         </div>
     {% endif %}
-    <div class="comments-requests">
+    <div class="comments-requests mt-5">
         {{ include ('back/parts/table.html.twig', {form: commentsRequests, title: 'Liste des commentaires'}) }}
 
     </div>

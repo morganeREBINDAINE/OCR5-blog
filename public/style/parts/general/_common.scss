@@ -1,6 +1,27 @@
 body {
   margin-top: 56px;
+  font-family: 'Abel', sans-serif;
+  font-size: 18px;
 }
 a:hover {
   text-decoration: none;
+}
+.bg-secondary {
+  background-color: #9b4141 !important;
+}
+.nav-link {
+  letter-spacing: 1.4px;
+}
+h1 {
+  text-align: center;
+  margin: 20px auto 40px;
+}
+.btn-dark {
+  background-color: #9b4141;
+  border-color: #9b4141;
+
+  &:hover {
+    background-color: darken(#9b4141, 10%);
+    border-color: darken(#9b4141, 10%);
+  }
 }

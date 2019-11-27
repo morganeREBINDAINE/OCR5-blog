@@ -19,7 +19,7 @@
                     <form action="/action-entities" method="post">
                         <input type="hidden" name="token" value="{{ form.entity }}-{{ hash(row.id) }}">
                         {% if form.postsByUser %}
-                        <input type="submit" class="btn btn-success" name="action" value="modifier">
+                        <input type="submit" class="btn btn-warning" name="action" value="modifier">
                         {% else %}
                             {% if form.type is same as ('requests') %}
                             <input type="submit" class="btn btn-success" name="action" value="accepter">

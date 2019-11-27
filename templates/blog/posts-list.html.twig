@@ -4,16 +4,17 @@
         <h1>Articles du blog</h1>
         {% if posts is not empty %}
             {% for post in posts %}
-                <div class="post">
+                <div class="post bg-secondary">
                     <div class="row">
                         <div class="col-md-5">
                             <div class="post-image" style="background-image: url('{{ img(post.image)  }}-mini{{ post.extension }}')"></div>
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-7 post-content">
                             <h2>{{ post.title }}</h2>
-                            <small>par {{ post.username }}, le {{ post.added }}</small>
+                            <small>par {{ post.username }}, le {{ post.added }}{% if post.updated %}, modifié le {{ post.updated }}{% endif %}</small>
+
                             <p>{{ post.chapo }}</p>
-                            <a href="/article-{{ post.id }}" class="btn btn-warning">Voir le post</a>
+                            <a href="/article-{{ post.id }}" class="btn btn-primary">Voir le post</a>
                         </div>
                     </div>
                 </div>
