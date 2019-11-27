@@ -2,6 +2,8 @@
 
 namespace OCR5\Controllers;
 
+use OCR5\App\App;
+use OCR5\App\Post;
 use OCR5\Handler\CommentHandler;
 use OCR5\Handler\PostHandler;
 use OCR5\Services\BackManager;
@@ -34,19 +36,19 @@ class BlogController extends Controller
         $post = $postHandler->getValid($id);
 
         $pagination = $backManager->getPagination('comment', 4, 'post_id = '. (int)$id);
-//        var_dump($pagination);
 
         if (empty($post)) {
             return $this->error('Aucun article ne correspond à cet article.');
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['name'], $_POST['email'], $_POST['content'], $_POST['id'])
+        if (App::isPostMethod()
+            && null !== Post::get('name')
+            && null !== Post::get('email')
+            && null !== Post::get('content')
+            && null !== Post::get('id')
         ) {
-            $_POST['original_id'] = $id;
-
-            if (false === $formManager->checkCommentFormErrors($_POST)) {
-                (new CommentHandler())->create($_POST) ?
+            if (false === $formManager->checkCommentFormErrors(Post::get(), $id)) {
+                (new CommentHandler())->create(Post::get()) ?
                     $this->addFlash('success', 'Votre commentaire a été ajouté: il doit être validé avant d\'être publié.')
                     : $this->addFlash('error', 'Il y a eu un problème lors de l\'ajout de l\'article.');
             }
@@ -58,5 +60,4 @@ class BlogController extends Controller
             'page' => $pagination['pages']
         ]);
     }
-
 }

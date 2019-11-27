@@ -2,7 +2,7 @@
 
 namespace OCR5\Services;
 
-use OCR5\App\App;
+use OCR5\Traits\DatabaseTrait;
 use OCR5\Traits\FlashbagTrait;
 
 class Manager

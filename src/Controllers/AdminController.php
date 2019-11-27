@@ -4,22 +4,17 @@ namespace OCR5\Controllers;
 
 use OCR5\App\App;
 use OCR5\App\Session;
-use OCR5\Entities\Post;
+use OCR5\App\Post;
 use OCR5\Handler\PostHandler;
 use OCR5\Services\BackManager;
-use OCR5\Services\EntityManager;
-use OCR5\Services\EntitiesManager;
 use OCR5\Services\FormManager;
-use OCR5\Services\PostManager;
-use Verot\Upload\Upload;
 
 class AdminController extends Controller
 {
     public function __construct()
     {
         if (false === $this->isConnected()) {
-            header("HTTP/1.0 401 Unauthorized");
-            header('location: http://blog/');
+            $this->redirect('/');
         }
     }
 
@@ -70,15 +65,15 @@ class AdminController extends Controller
 
     public function actionEntities()
     {
-        if (isset($_POST['token'], $_POST['action'])) {
-            $token = $_POST['token'];
+        if (Post::get('token') && Post::get('action')) {
+            $token = Post::get('token');
             list($entity, $id, $hash) = explode('-', $token);
 
             if (password_verify($id= (int)base64_decode($id), $hash)) {
                 $handler = 'OCR5\Handler\\'.ucfirst($entity).'Handler';
                 $handler = new $handler();
 
-                switch ($_POST['action']) {
+                switch (Post::get('action')) {
                     case 'accepter':
                         $handler->changeStatus($id, 1);
                         $this->redirect(Session::get('last_page'));
@@ -104,35 +99,41 @@ class AdminController extends Controller
 
     public function writePost($id = null)
     {
-        $repository = new PostHandler();
-        $post = $repository->get($id) ?: null;
+        $postHandler = new PostHandler();
+        $post = $postHandler->get($id) ?: null;
 
         if (($id) && ($post === false || ($this->isAdmin() === false && $post->getUser() !== Session::get('user')->getId()))) {
             return $this->error('Cet article n\'existe pas ou bien vous n\'avez pas de droits dessus.');
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'], $_POST['content'], $_POST['chapo'], $_FILES['image'])) {
+        if (App::isPostMethod()
+            && null !== Post::get('title')
+            && null !== Post::get('content')
+            && null !== Post::get('chapo')
+            && null !== Post::getFile('image')
+        ) {
             $em = new FormManager();
+            $formData = Post::get();
 
-            $image = $em->createImage($_FILES['image'], $post);
+            $image = $em->createImage(Post::getFile('image'), $post);
 
-            if (false === $em->checkPostFormErrors($_POST, $image)) {
+            if (false === $em->checkPostFormErrors($formData, $image)) {
                 if ($id) {
-                    $repository->change($id, $_POST, $image);
+                    $postHandler->change($id, $formData, $image);
                     $this->addFlash('success', 'Votre article a été modifié.');
                     header("Refresh:0");
                     exit();
                 }
 
-                $_POST['img'] = $image;
-                $repository->create($_POST);
+                $formData['img'] = $image;
+                $postHandler->create($formData, $image);
                 $this->addFlash('success', 'Votre article a été ajouté et doit être validé par l\'administratrice avant d\'être publié.');
                 $this->redirect('/profil');
             }
         }
 
         return $this->render('back/post-form', [
-            'post' => null !== $id ? $post : $_POST
+            'post' => null !== $id ? $post : $formData
         ]);
     }
 
