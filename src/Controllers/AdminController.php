@@ -77,13 +77,14 @@ class AdminController extends Controller
                 switch (Post::get('action')) {
                     case 'accepter':
                         $handler->changeStatus($identifier, 1);
-                        $this->redirect(Session::get('last_page'));
+                        $this->redirect('/profil');
                         break;
                     case 'modifier':
                         $this->redirect('/modifier-article-'.$identifier);
                         break;
                     case 'refuser':
                         $handler->changeStatus($identifier, 2);
+                        $this->redirect('/profil');
                         break;
                     case 'supprimer':
                         $handler->changeStatus($identifier, 3);
@@ -103,6 +104,7 @@ class AdminController extends Controller
     {
         $postHandler = new PostHandler();
         $post = $postHandler->get($identifier) ?: null;
+        $formData = null;
 
         if (($identifier) && ($post === false || ($this->isAdmin() === false && $post->getUser() !== Session::get('user')->getId()))) {
             return $this->error('Cet article n\'existe pas ou bien vous n\'avez pas de droits dessus.');
@@ -128,7 +130,8 @@ class AdminController extends Controller
                 $formData['img'] = $image;
                 $postHandler->create($formData);
                 $this->addFlash('success', 'Votre article a été ajouté et doit être validé par l\'administratrice avant d\'être publié.');
-                $this->redirect('/profil');
+                header("Refresh:0");
+                exit();
             }
         }
 

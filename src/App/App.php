@@ -59,7 +59,7 @@ class App
 
         $router = new AltoRouter();
 
-        $router->map('GET', '/', 'OCR5\Controllers\BlogController::home');
+        $router->map('GET|POST', '/', 'OCR5\Controllers\BlogController::home');
         $router->map('GET|POST', '/article-[i:id]', 'OCR5\Controllers\BlogController::showPost');
         $router->map('GET', '/articles', 'OCR5\Controllers\BlogController::postsList');
 
@@ -85,12 +85,10 @@ class App
 
     public static function isPostMethod()
     {
-//        var_dump(self::getServer('METHOD_REQUEST'));
         return self::getServer('REQUEST_METHOD') === 'POST';
     }
 
     public static function getServer($key = null) {
-//        var_dump($key, isset($_SERVER[$key]), $_SERVER);
         return (isset($_SERVER[$key]) ? $_SERVER[$key] : null);
     }
 }

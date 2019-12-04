@@ -97,7 +97,7 @@ class FormManager extends Manager
         }
 
         if ($result = (new UserHandler())->findStatusContributor($formData['username'], $formData['email'])) {
-            switch ($result['status']) {
+            switch ($result->getStatus()) {
                 case User::STATUS_VALIDATED:
                     $this->addFlash(
                         'error',
@@ -177,10 +177,33 @@ class FormManager extends Manager
         }
 
         if (strlen($formData['content']) < 10) {
-            $this->addFlash('error', 'Faites un effort... Ce message est trop insignifiant !');
+            $this->addFlash('error', 'Faites un effort... Ce message est trop court !');
             return true;
         }
 
         return false;
+    }
+
+    public function checkContactForm($formData)
+    {
+        $error = false;
+
+        if (false === filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
+            $error = 'L\'email entré est incorrect.';
+        }
+
+        if (strlen($formData['message']) < 30) {
+            $error .= ' Le message est trop court (30 caractères min).';
+        }
+
+        if (strlen(trim($formData['name'])) < 5) {
+            $error .= ' Merci de rentrer un nom correct (5 caractères min).';
+        }
+
+        if ($error) {
+            $this->addFlash('error', 'Erreur message: '.$error);
+        }
+
+        return $error;
     }
 }

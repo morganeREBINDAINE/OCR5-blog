@@ -15,7 +15,16 @@
             <a href="doc/cv.pdf" class="btn btn-warning">Voir mon CV</a>
             <a href="" class="btn btn-primary" data-toggle="modal" data-target="#contact">Me contacter</a>
         </div>
-
+        {% if session.flashbag.success %}
+            <div class="alert alert-success">
+                {{session.flashbag.success}}
+            </div>
+        {% endif %}
+        {% if session.flashbag.error %}
+            <div class="alert alert-danger">
+                {{session.flashbag.error}}
+            </div>
+        {% endif %}
         <div class="modal fade" id="contact">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -26,17 +35,17 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="mb-5 authentication" action="/connexion" method="post">
+                        <form class="mb-5 authentication" method="post">
                             <div class="form-group">
-                                <label for="username">Nom complet:</label>
-                                <input class="form-control" type="text" name="name">
+                                <label for="name">Nom complet:</label>
+                                <input class="form-control" type="text" id="name" name="name">
                             </div>
                             <div class="form-group">
-                                <label for="username">Email:</label>
-                                <input class="form-control" type="text" name="email">
+                                <label for="email">Email:</label>
+                                <input class="form-control" type="text" id="email" name="email">
                             </div>
                             <div class="form-group">
-                                <label for="password">Message:</label>
+                                <label for="message">Message:</label>
                                 <textarea class="form-control" name="message" id="message"></textarea>
                             </div>
                             <button class="btn btn-dark" type="submit">Envoyer</button>
